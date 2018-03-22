@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.community.model.VisitorCountBean">
+
+	<resultMap id="VisitorCount" type="com.casic.community.model.VisitorCountBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="passageId" column="passageId" jdbcType="NUMERIC"/>
+		<result property="readCount" column="readCount" jdbcType="NUMERIC"/>
+		<result property="replyCount" column="replyCount" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		id,passageId,readCount,replyCount
+	</sql>
+	
+	<update id="updateReadCountById" parameterType="java.lang.Long">
+		update sys_community_visitorcount set readCount=readCount+1
+		where passageId=#{id}
+	</update>
+	
+	<update id="updateReplyCountById" parameterType="java.util.Map">
+		update sys_community_visitorcount set replyCount=#{replyCount}
+		where passageId=#{id}
+	</update>
+	
+	<insert id="add" parameterType="com.casic.community.model.VisitorCountBean">
+		INSERT INTO sys_community_visitorcount  
+		(id,passageId,readCount,replyCount)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{passageId,jdbcType=NUMERIC}, #{readCount,jdbcType=NUMERIC}, #{replyCount,jdbcType=NUMERIC})
+	</insert>
+	
+	<select id="findByPassageId" parameterType="java.lang.Long" resultMap="VisitorCount">
+		select <include refid="columns"/>
+		from sys_community_visitorcount v
+		where v.passageId=#{passageId}
+	</select>
+	
+</mapper>

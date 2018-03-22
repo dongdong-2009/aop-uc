@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.base.model.config.UserRelationShip">
+	<resultMap id="UserRelationShip" type="com.casic.base.model.config.UserRelationShip">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="partnerId" column="PARTNER_ID" jdbcType="VARCHAR"/>
+		<result property="partnerUserId" column="PARTNER_USER_ID" jdbcType="VARCHAR"/>
+		<result property="userId" column="USER_ID" jdbcType="NUMERIC"/>
+		<result property="account" column="ACCOUNT" jdbcType="VARCHAR"/>
+		<result property="applyTime" column="APPLY_TIME" jdbcType="TIMESTAMP"/>
+		<result property="status" column="STATUS" jdbcType="VARCHAR"/>
+		<result property="fromsystemid" column="fromsystemid" jdbcType="NUMERIC"/>
+		
+	</resultMap>
+
+	<sql id="columns">
+		id,PARTNER_ID,PARTNER_USER_ID,USER_ID,ACCOUNT,APPLY_TIME,STATUS,fromsystemid
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(partnerId)"> AND PARTNER_ID  =#{partnerId} </if>
+			<if test="@Ognl@isNotEmpty(partnerUserId)"> AND PARTNER_USER_ID  =#{partnerUserId} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> AND USER_ID  =#{userId} </if>
+			<if test="@Ognl@isNotEmpty(account)"> AND ACCOUNT  LIKE #{account}  </if>
+			<if test="@Ognl@isNotEmpty(applyTime)"> AND APPLY_TIME  =#{applyTime} </if>
+			<if test="@Ognl@isNotEmpty(beginapplyTime)"> AND APPLY_TIME  >=#{beginapplyTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endapplyTime)"> AND APPLY_TIME <![CDATA[ <=#{endapplyTime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND STATUS  LIKE #{status}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.base.model.config.UserRelationShip">
+		INSERT INTO sys_userRelationship_mapping
+		(id,PARTNER_ID,PARTNER_USER_ID,USER_ID,ACCOUNT,APPLY_TIME,STATUS)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{partnerId,jdbcType=VARCHAR}, #{partnerUserId,jdbcType=VARCHAR},#{userId,jdbcType=NUMERIC},#{account,jdbcType=VARCHAR}, #{applyTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_userRelationship_mapping
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.base.model.config.UserRelationShip">
+		UPDATE sys_userRelationship_mapping SET
+		PARTNER_ID=#{partnerId,jdbcType=NUMERIC},
+		PARTNER_USER_ID=#{partnerUserId,jdbcType=NUMERIC},
+		USER_ID=#{userId,jdbcType=NUMERIC},
+		ACCOUNT=#{account,jdbcType=VARCHAR},
+		APPLY_TIME=#{applyTime,jdbcType=TIMESTAMP},
+		STATUS=#{status,jdbcType=VARCHAR},
+		fromsystemid=#{fromsystemid,jdbcType=NUMERIC}
+		WHERE
+		id=#{id}
+	</update>
+	<insert id="addship"  parameterType="com.casic.base.model.config.UserRelationShip" >  
+        insert into 
+        sys_userRelationship_mapping (id,partner_id, partner_user_id,user_id,account,apply_time,status,fromsystemid) values (#{id},#{partnerId}, #{partnerUserId},#{userId},#{account},#{applyTime},#{status},#{fromsystemid})  
+    </insert>  
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="UserRelationShip">
+		SELECT <include refid="columns"/>
+		FROM sys_userRelationship_mapping
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="loadUserRelationShipByUserIdAndTenantId" parameterType="map" resultMap="UserRelationShip">
+		SELECT <include refid="columns"/>
+		FROM sys_userRelationship_mapping
+		WHERE
+		PARTNER_ID=#{partnerId} AND PARTNER_USER_ID=#{userId}
+	</select>
+	
+	<select id="getshipbypartnerUserId" parameterType="java.lang.String" resultMap="UserRelationShip">
+		SElECT <include refid="columns"/>
+		FROM  sys_userRelationship_mapping
+		WHERE
+		partner_user_id=#{partnerUserId}
+	</select>
+	
+	<select id="getshipbypartnerUserIdList" parameterType="java.lang.String" resultMap="UserRelationShip">
+		SElECT <include refid="columns"/>
+		FROM  sys_userRelationship_mapping
+		WHERE
+		partner_user_id=#{partnerUserId}
+	</select>
+	
+	<select id="getShipBypartnerUserIdSystemId" parameterType="map" resultMap="UserRelationShip">
+		SElECT <include refid="columns"/>
+		FROM  sys_userRelationship_mapping
+		WHERE
+		partner_user_id=#{partnerUserId}
+		and fromsystemid =#{systemId}
+	</select>
+	
+	<select id="getshipbyAccount" parameterType="java.lang.String" resultMap="UserRelationShip">
+		SElECT <include refid="columns"/>
+		FROM  sys_userRelationship_mapping
+		WHERE
+		ACCOUNT=#{account}
+	</select>
+	
+	<delete id="deleteByAccountAndPartnerUserId" parameterType="com.casic.base.model.config.UserRelationShip">
+		DELETE FROM sys_userRelationship_mapping 
+		WHERE
+		partner_User_Id=#{partnerUserId} and account=#{account}
+	
+	</delete>
+	
+	
+	
+	
+	
+	<select id="getAll" resultMap="UserRelationShip">
+		SELECT <include refid="columns"/>
+		FROM sys_userRelationship_mapping   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

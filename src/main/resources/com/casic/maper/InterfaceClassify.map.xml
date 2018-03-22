@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.subsysInterface.model.InterfaceClassifyBean">
+	<resultMap id="InterfaceClassify" type="com.casic.subsysInterface.model.InterfaceClassifyBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="ename" column="ename" jdbcType="VARCHAR"/>
+		<result property="createTime" column="createTime" jdbcType="DATE"/>
+		<result property="remark1" column="remark1" jdbcType="VARCHAR"/>
+		<result property="remark2" column="remark2" jdbcType="NUMERIC"/>
+		<result property="remark3" column="remark3" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		id,name,ename,createTime,remark1,remark2,remark3
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(ename)"> AND ename  LIKE #{ename}  </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND createTime  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND createTime &lt;=#{endcreatetime}</if>
+			<if test="@Ognl@isNotEmpty(remark1)"> AND ename  LIKE #{remark1}  </if>
+			<if test="@Ognl@isNotEmpty(remark2)"> AND ename  LIKE #{remark2}  </if>
+			<if test="@Ognl@isNotEmpty(remark3)"> AND ename  LIKE #{remark3}  </if>
+			</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.subsysInterface.model.InterfaceClassifyBean">
+		INSERT INTO sys_interface_classify
+		(<include refid="columns"/>)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR}, #{ename,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{remark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, #{remark3,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_interface_classify 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.subsysInterface.model.InterfaceClassifyBean">
+		UPDATE sys_interface_classify SET
+		name=#{name,jdbcType=VARCHAR} , 
+		ename=#{ename,jdbcType=VARCHAR} , 
+		createTime=#{createTime,jdbcType=DATE} , 
+		remark1=#{remark1,jdbcType=VARCHAR} , 
+		remark2=#{remark2,jdbcType=VARCHAR} ,
+		remark3=#{remark3,jdbcType=VARCHAR} 
+		WHERE
+		id=#{id}
+	</update>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="InterfaceClassify">
+		SELECT <include refid="columns"/> FROM sys_interface_classify 	WHERE 	id=#{id}
+	</select>
+	
+	
+	<select id="getAll" resultMap="InterfaceClassify">
+		SELECT <include refid="columns"/>
+		FROM sys_interface_classify   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+
+</mapper>

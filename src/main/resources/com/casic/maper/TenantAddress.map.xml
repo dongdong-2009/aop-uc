@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.tenant.model.TenantAddress">
+	
+	<resultMap id="tenantAddress" type="com.casic.tenant.model.TenantAddress">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="userId" column="userId" jdbcType="NUMERIC"/>
+		<result property="contact" column="contact" jdbcType="VARCHAR"/>
+		<result property="nation" column="nation" jdbcType="VARCHAR"/>
+		<result property="province" column="province" jdbcType="VARCHAR"/>
+		<result property="city" column="city" jdbcType="VARCHAR"/>
+		<result property="country" column="country" jdbcType="VARCHAR"/>
+		<result property="addresDetail" column="addresDetail" jdbcType="VARCHAR"/>
+		<result property="postcode" column="postcode" jdbcType="VARCHAR"/>
+		<result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+		<result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+		<result property="isDefault" column="isDefault" jdbcType="VARCHAR"/>
+		<result property="isReceviced" column="isReceviced" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	 <insert id="addTenantAddress" parameterType="com.casic.tenant.model.TenantAddress">
+		INSERT INTO cloud_tenant_address
+		(id, userId, contact, nation, province, city, country, addresDetail, postcode, mobile, telephone, isDefault, isReceviced)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userId,jdbcType=NUMERIC}, #{contact,jdbcType=VARCHAR}, #{nation,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{addresDetail,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{isDefault,jdbcType=VARCHAR},#{isReceviced,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateTenantAddress" parameterType="com.casic.tenant.model.TenantAddress">
+		UPDATE cloud_tenant_address SET
+		contact=#{contact,jdbcType=VARCHAR},
+		province=#{province,jdbcType=VARCHAR},
+		city=#{city,jdbcType=VARCHAR},
+		country=#{country,jdbcType=VARCHAR},
+		addresDetail=#{addresDetail,jdbcType=VARCHAR},
+		postcode=#{postcode,jdbcType=VARCHAR},
+		mobile=#{mobile,jdbcType=VARCHAR},
+		telephone=#{telephone,jdbcType=VARCHAR},
+		isDefault=#{isDefault,jdbcType=VARCHAR},
+		isReceviced=#{isReceviced,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+	
+	<update id="updateTenantAddressisDefault" parameterType="map">
+	     UPDATE cloud_tenant_address SET isDefault='1' WHERE userId=#{userId} and id=#{id} and isReceviced=#{isReceviced}
+	</update>
+	<update id="updateTenantAddressUnisDefault" parameterType="map">
+	     UPDATE cloud_tenant_address SET isDefault='0' WHERE userId=#{userId} and id&lt;&gt;#{id} and isReceviced=#{isReceviced}
+	</update>
+	<select id="getAllTenantAddress" parameterType="java.lang.Long" resultType="com.casic.tenant.model.TenantAddress">
+	    SELECT 
+		tab.id, tab.contact, tab.province, tab.city, tab.country, tab.addresDetail, tab.postcode, tab.mobile,  tab.telephone, tab.isDefault
+		FROM 
+		cloud_tenant_address tab
+		WHERE tab.userId=#{userId}
+	</select>
+	<select id="getTenantAddressByType" parameterType="map" resultType="com.casic.tenant.model.TenantAddress">
+	    SELECT 
+		tab.id, tab.contact, tab.province, tab.city, tab.country, tab.addresDetail, tab.postcode, tab.mobile,  tab.telephone, tab.isDefault
+		FROM 
+		cloud_tenant_address tab
+		WHERE tab.userId=#{userId}
+		AND tab.isReceviced=#{isReceviced}
+	</select>
+	<delete id="delAddress" parameterType="map">
+	     DELETE FROM  cloud_tenant_address WHERE id=#{id} and userId=#{userId} 
+	</delete>
+	<select id="getAddressById" parameterType="map" resultType="com.casic.tenant.model.TenantAddress">
+	     SELECT 
+		tab.id, tab.contact, tab.province, tab.city, tab.country, tab.addresDetail, tab.postcode, tab.mobile,  tab.telephone, tab.isDefault,tab.isReceviced
+		FROM 
+		cloud_tenant_address tab
+		WHERE tab.userId=#{userId}
+		AND tab.id=#{id}
+	</select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.msgLog.model.SysMsgLog">
+	<resultMap id="SysMsgLog" type="com.casic.msgLog.model.SysMsgLog">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="operation" column="operation" jdbcType="VARCHAR"/>
+		<result property="sendrersonal" column="sendRersonal" jdbcType="VARCHAR"/>
+		<result property="receiverersonal" column="receiveRersonal" jdbcType="VARCHAR"/>
+		<result property="sendtime" column="sendTime" jdbcType="DATE"/>
+		<result property="sendcontent" column="sendContent" jdbcType="CLOB"/>
+		<result property="remark1" column="remark1" jdbcType="VARCHAR"/>
+		<result property="remark2" column="remark2" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,operation,sendRersonal,receiveRersonal,sendTime,sendContent,remark1,remark2
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(operation)"> AND operation  LIKE #{operation}  </if>
+			<if test="@Ognl@isNotEmpty(sendrersonal)"> AND sendRersonal  LIKE #{sendrersonal}  </if>
+			<if test="@Ognl@isNotEmpty(receiverersonal)"> AND receiveRersonal  LIKE #{receiverersonal}  </if>
+			<if test="@Ognl@isNotEmpty(sendtime)"> AND sendTime  =#{sendtime} </if>
+			<if test="@Ognl@isNotEmpty(beginsendtime)"> AND sendTime  >=#{beginsendtime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endsendtime)"> AND sendTime <![CDATA[ <=#{endsendtime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(sendcontent)"> AND sendContent  LIKE #{sendcontent}  </if>
+			<if test="@Ognl@isNotEmpty(remark1)"> AND remark1  LIKE #{remark1}  </if>
+			<if test="@Ognl@isNotEmpty(remark2)"> AND remark2  LIKE #{remark2}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.msgLog.model.SysMsgLog">
+		INSERT INTO sys_msg_log
+		(id,operation,sendRersonal,receiveRersonal,sendTime,sendContent,remark1,remark2)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{operation,jdbcType=VARCHAR}, #{sendrersonal,jdbcType=VARCHAR}, #{receiverersonal,jdbcType=VARCHAR}, now(), #{sendcontent,jdbcType=CLOB}, #{remark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_msg_log 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.msgLog.model.SysMsgLog">
+		UPDATE sys_msg_log 
+		<set>
+		<if test="operation !='' and operation !=null ">operation=#{operation,jdbcType=VARCHAR},</if>
+		<if test="sendRersonal !='' and sendRersonal !=null ">sendRersonal=#{sendrersonal,jdbcType=VARCHAR},</if>
+		<if test="receiveRersonal !='' and receiveRersonal !=null ">receiveRersonal=#{receiverersonal,jdbcType=VARCHAR},</if>
+		<if test="sendTime !='' and sendTime !=null ">sendTime=#{sendtime,jdbcType=DATE},</if>
+		<if test="sendContent !='' and sendContent !=null ">sendContent=#{sendcontent,jdbcType=CLOB},</if>
+		<if test="remark1 !='' and remark1 !=null ">remark1=#{remark1,jdbcType=VARCHAR},</if>
+		<if test="remark2 !='' and remark2 !=null ">remark2=#{remark2,jdbcType=VARCHAR}</if>
+		</set>
+		WHERE id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysMsgLog">
+		SELECT <include refid="columns"/>
+		FROM sys_msg_log
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SysMsgLog">
+		SELECT <include refid="columns"/>
+		FROM sys_msg_log   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

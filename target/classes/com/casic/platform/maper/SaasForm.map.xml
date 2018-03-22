@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.platform.saas.form.SaasForm">
+	<resultMap id="SaasForm" type="com.casic.platform.saas.form.SaasForm">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="companyid" column="companyId" jdbcType="NUMERIC"/>
+		<result property="srcurl" column="srcUrl" jdbcType="VARCHAR"/>
+		<result property="transferurl" column="transferUrl" jdbcType="VARCHAR"/>
+		<result property="state" column="state" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,companyId,srcUrl,transferUrl,state
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(companyid)"> AND companyId  =#{companyid} </if>
+			<if test="@Ognl@isNotEmpty(srcurl)"> AND srcUrl  LIKE #{srcurl}  </if>
+			<if test="@Ognl@isNotEmpty(transferurl)"> AND transferUrl  LIKE #{transferurl}  </if>
+			<if test="@Ognl@isNotEmpty(state)"> AND state  LIKE #{state}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.platform.saas.form.SaasForm">
+		INSERT INTO cloud_saas_form
+		(id,companyId,srcUrl,transferUrl,state)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{companyid,jdbcType=NUMERIC}, #{srcurl,jdbcType=VARCHAR}, #{transferurl,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_form 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.platform.saas.form.SaasForm">
+		UPDATE cloud_saas_form SET
+		companyId=#{companyid,jdbcType=NUMERIC},
+		srcUrl=#{srcurl,jdbcType=VARCHAR},
+		transferUrl=#{transferurl,jdbcType=VARCHAR},
+		state=#{state,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SaasForm">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_form
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="SaasForm">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_form   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

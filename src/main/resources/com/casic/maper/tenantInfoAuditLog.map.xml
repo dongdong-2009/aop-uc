@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.auditLog.model.tenantAudit.tenantInfoAuditLog">
+	<resultMap id="tenantInfoAuditLog" type="com.casic.auditLog.model.tenantAudit.tenantInfoAuditLog">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="operatorid" column="operatorId" jdbcType="NUMERIC"/>
+		<result property="operatortime" column="operatorTime" jdbcType="TIMESTAMP"/>
+		<result property="operatoraction" column="operatorAction" jdbcType="VARCHAR"/>
+		<result property="rejectreson" column="rejectReson" jdbcType="VARCHAR"/>
+		<result property="axnstatusreason" column="axnStatusReason" jdbcType="VARCHAR"/>
+		<result property="tenantId" column="tenantId" jdbcType="NUMERIC"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,operatorId,operatorTime,operatorAction,rejectReson,axnStatusReason,tenantId
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(operatorid)"> AND operatorId  =#{operatorid} </if>
+			<if test="@Ognl@isNotEmpty(tenantId)"> AND tenantId  =#{tenantId} </if>
+			<if test="@Ognl@isNotEmpty(operatortime)"> AND operatorTime  =#{operatortime} </if>
+			<if test="@Ognl@isNotEmpty(beginoperatortime)"> AND operatorTime  >=#{beginoperatortime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endoperatortime)"> AND operatorTime <![CDATA[ <=#{endoperatortime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(operatoraction)"> AND operatorAction  LIKE #{operatoraction}  </if>
+			<if test="@Ognl@isNotEmpty(rejectreson)"> AND rejectReson  LIKE #{rejectreson}  </if>
+			<if test="@Ognl@isNotEmpty(axnstatusreason)"> AND axnStatusReason  LIKE #{axnstatusreason}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.auditLog.model.tenantAudit.tenantInfoAuditLog">
+		INSERT INTO sys_operation_record
+		(id,operatorId,operatorTime,operatorAction,rejectReson,axnStatusReason,tenantId)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{operatorid,jdbcType=NUMERIC}, #{operatortime,jdbcType=TIMESTAMP}, #{operatoraction,jdbcType=VARCHAR}, #{rejectreson,jdbcType=VARCHAR}, #{axnstatusreason,jdbcType=VARCHAR},#{tenantId,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_operation_record 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.auditLog.model.tenantAudit.tenantInfoAuditLog">
+		UPDATE sys_operation_record SET
+		operatorId=#{operatorid,jdbcType=NUMERIC},
+		operatorTime=#{operatortime,jdbcType=DATE},
+		operatorAction=#{operatoraction,jdbcType=VARCHAR},
+		rejectReson=#{rejectreson,jdbcType=VARCHAR},
+		axnStatusReason=#{axnstatusreason,jdbcType=VARCHAR},
+		tenantId=#{tenantId,jdbcType=NUMERIC}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="tenantInfoAuditLog">
+		SELECT <include refid="columns"/>
+		FROM sys_operation_record
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="tenantInfoAuditLog">
+		SELECT <include refid="columns"/>
+		FROM sys_operation_record   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	<!-- 查询被驳回企业的驳回信息 -->
+	<select id="getReasonbyTenantId" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT rejectReson
+		FROM sys_operation_record
+		WHERE
+		tenantId=#{sysOrgInfoId}  and operatorAction=2 order by operatortime desc limit 1
+	</select>
+	<!-- 查询企业的爱心诺信息 -->
+	<select id="getAxnReasonBybyTenantId" parameterType="java.lang.Long" resultType="java.lang.String">
+		SELECT axnstatusreason
+		FROM sys_operation_record
+		WHERE
+		tenantId=#{sysOrgInfoId}  and operatorAction=0 order by operatortime desc limit 1
+	</select>
+	<select id="getRecordbyTenantId" parameterType="java.lang.Long" resultMap="tenantInfoAuditLog">
+		SELECT <include refid="columns"/>
+		FROM sys_operation_record
+		WHERE
+		tenantId=#{sysOrgInfoId} order by operatorTime desc limit 5  
+	</select>
+</mapper>

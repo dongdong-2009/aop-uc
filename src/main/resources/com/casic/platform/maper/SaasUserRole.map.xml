@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.platform.saas.userRole.SaasUserRole">
+	<resultMap id="SaasUserRole" type="com.casic.platform.saas.userRole.SaasUserRole">
+		<id property="saasUserRoleid" column="SaasUserRoleId" jdbcType="NUMERIC"/>
+		<result property="roleid" column="roleId" jdbcType="NUMERIC"/>
+		<result property="userid" column="userId" jdbcType="NUMERIC"/>
+		<result property="tenantid" column="tenantId" jdbcType="NUMERIC"/>
+		<result property="fullname" column="fullname" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		SaasUserRoleId,roleId,userId,tenantId
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(SaasUserRoleid)"> AND SaasUserRoleId  =#{saasUserRoleid} </if>
+			<if test="@Ognl@isNotEmpty(roleid)"> AND roleId  =#{roleid} </if>
+			<if test="@Ognl@isNotEmpty(userid)"> AND userId  =#{userid} </if>
+			<if test="@Ognl@isNotEmpty(tenantid)"> AND tenantId  =#{tenantid} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.platform.saas.userRole.SaasUserRole">
+		INSERT INTO cloud_saas_user_role
+		(SaasUserRoleId,roleId,userId,tenantId)
+		VALUES
+		(#{saasUserRoleid,jdbcType=NUMERIC}, #{roleid,jdbcType=NUMERIC}, #{userid,jdbcType=NUMERIC}, #{tenantid,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_user_role 
+		WHERE
+		SaasUserRoleId=#{saasUserRoleid}
+	</delete>
+	
+	<delete id="delByTenantAndRole" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_user_role
+		WHERE
+		tenantId=#{tenantId}
+		and
+		roleId=#{roleId}
+	</delete>
+	
+	<!-- 删除企业下的所有人员 -->
+	<delete id="delByTenantAndUser" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_user_role
+		WHERE
+		tenantId=#{tenantId} and userId=#{userId}
+	</delete>
+	
+	<!-- 删除企业下的所有角色人员 -->
+	<delete id="delByTenant" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_user_role
+		WHERE
+		tenantId=#{tenantId}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.platform.saas.userRole.SaasUserRole">
+		UPDATE cloud_saas_user_role SET
+		roleId=#{roleid,jdbcType=NUMERIC},
+		userId=#{userid,jdbcType=NUMERIC},
+		tenantId=#{tenantid,jdbcType=NUMERIC}
+		WHERE
+		SaasUserRoleId=#{saasUserRoleid}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SaasUserRole">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_user_role
+		WHERE
+		SaasUserRoleId=#{saasUserRoleid}
+	</select>
+	
+	<select id="getAll" resultMap="SaasUserRole">
+		SELECT urro.roleId,urro.userId,urro.SaasUserRoleid,ur.fullname,ur.account
+		FROM CLOUD_SAAS_USER_ROLE urro,SYS_USER ur
+		WHERE  urro.userId=ur.userId 
+		<if test="@Ognl@isNotEmpty(roleId)"> AND urro.roleId  =#{roleId} </if>
+		<if test="@Ognl@isNotEmpty(userId)"> AND urro.userId  =#{userId} </if>
+		<if test="@Ognl@isNotEmpty(tenantId)"> AND urro.tenantId  =#{tenantId} </if>
+		<if test="@Ognl@isNotEmpty(fullname)"> AND fullname  like #{fullname} </if>
+		<if test="@Ognl@isNotEmpty(account)"> AND account  like #{account} </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+			order by ur.${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+			order by SaasUserRoleid  desc
+		</if>
+	</select>
+	
+	<select id="getUserRoleModel" parameterType="java.util.Map" resultMap="SaasUserRole">
+	    select <include refid="columns"/>
+	    from CLOUD_SAAS_USER_ROLE
+	    where  userId=#{userId}  and roleId=#{roleId}  and tenantId=#{tenantId}
+	</select>
+	
+	<insert id="batchInsert">
+		insert into CLOUD_SAAS_USER_ROLE (select #{tenantId} + t1.userRoleId,t1.roleId,t1.userId,#{tenantId} from sys_user_role t1 where t1.roleId in
+		<foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+			#{roleId,jdbcType=NUMERIC}
+		</foreach>
+		)
+	</insert>
+	
+	<delete id="delUserRoleByIds" parameterType="java.util.Map">
+		DELETE FROM cloud_saas_user_role  WHERE userId=#{userId} and roleId=#{roleId} and tenantId = #{tenantId}
+	</delete>
+	
+	<select id="getByUserId" parameterType="Long" resultMap="SaasUserRole">
+     select t.* from
+		(
+			select
+		        a.*,b.role_name as roleName,'saas' as fullname 
+		    from
+		        cloud_saas_user_role a, cloud_saas_role b 
+		    where
+		        a.roleId=b.role_id  
+		        and a.userId = #{userId}  
+		        and b.tenant_id=${tenantId} 
+		        and a.tenantId=${tenantId} 
+			UNION all
+			#公共角色
+			select
+		        a.*,b.roleName as roleName,'sysSaas' as fullname
+		    from
+		        cloud_saas_user_role a, sys_role b 
+		    where
+		        a.roleId=b.roleId  
+		        and a.userId = #{userId} 
+		        and a.tenantId=${tenantId} 
+				and b.roleId not in(select role_id from cloud_saas_role csr where csr.tenant_id=${tenantId})
+			UNION ALL
+			select 
+				a.userRoleId as SaasUserRoleId, a.roleId, a.userId, a.userId as tenantId ,b.roleName as roleName,'sys' as fullname 
+	    	from
+	        	sys_user_role a, sys_role b 
+	    	where
+	        a.roleId=b.roleId 
+	        and a.userId = #{userId} 
+        ) t 
+        GROUP BY t.roleId
+    </select>
+</mapper>

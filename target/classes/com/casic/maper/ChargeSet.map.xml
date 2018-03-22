@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.model.ChargeSet">
+	<resultMap id="ChargeSet" type="com.casic.model.ChargeSet">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="starttime" column="starttime" jdbcType="DATE"/>
+		<result property="endtime" column="endtime" jdbcType="DATE"/>
+		<result property="usernum" column="usernum" jdbcType="VARCHAR"/>
+		<result property="remark" column="remark" jdbcType="VARCHAR"/>
+		<result property="standard" column="standard" jdbcType="VARCHAR"/>
+		<result property="type" column="type" jdbcType="VARCHAR"/>
+		<result property="state" column="state" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,name,starttime,endtime,usernum,remark,standard,type,state
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(starttime)"> AND starttime  =#{starttime} </if>
+			<if test="@Ognl@isNotEmpty(beginstarttime)"> AND starttime  >=#{beginstarttime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endstarttime)"> AND starttime <![CDATA[ <=#{endstarttime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(endtime)"> AND endtime  =#{endtime} </if>
+			<if test="@Ognl@isNotEmpty(beginendtime)"> AND endtime  >=#{beginendtime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endendtime)"> AND endtime <![CDATA[ <=#{endendtime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(usernum)"> AND usernum  LIKE #{usernum}  </if>
+			<if test="@Ognl@isNotEmpty(remark)"> AND remark  LIKE #{remark}  </if>
+			<if test="@Ognl@isNotEmpty(standard)"> AND standard  LIKE #{standard}  </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type  LIKE #{type}  </if>
+			<if test="@Ognl@isNotEmpty(state)"> AND state  LIKE #{state}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.model.ChargeSet">
+		INSERT INTO cloud_charge_set
+		(id,name,starttime,endtime,usernum,remark,standard,type,state)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{name,jdbcType=VARCHAR}, #{starttime,jdbcType=DATE}, #{endtime,jdbcType=DATE}, #{usernum,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{standard,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM cloud_charge_set 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.model.ChargeSet">
+		UPDATE cloud_charge_set SET
+		name=#{name,jdbcType=VARCHAR},
+		starttime=#{starttime,jdbcType=DATE},
+		endtime=#{endtime,jdbcType=DATE},
+		usernum=#{usernum,jdbcType=VARCHAR},
+		remark=#{remark,jdbcType=VARCHAR},
+		standard=#{standard,jdbcType=VARCHAR},
+		type=#{type,jdbcType=VARCHAR},
+		state=#{state,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="ChargeSet">
+		SELECT <include refid="columns"/>
+		FROM cloud_charge_set
+		WHERE
+		id=#{id}
+	</select>
+	
+	
+ 
+	
+	
+	<select id="getAll" resultMap="ChargeSet">
+		SELECT <include refid="columns"/>
+		FROM cloud_charge_set   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

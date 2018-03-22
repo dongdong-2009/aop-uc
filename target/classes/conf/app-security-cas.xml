@@ -1,0 +1,431 @@
+<beans 
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+	
+	<security:http entry-point-ref="casAuthenticationEntryPoint" auto-config="true"
+		access-denied-page="/commons/403.jsp" lowercase-comparisons="true"
+		servlet-api-provision="true">
+			   
+		<security:intercept-url pattern="/js/**" filters="none" />
+		<security:intercept-url pattern="/commons/**" filters="none" />
+		<security:intercept-url pattern="/media/**" filters="none" />
+		<security:intercept-url pattern="/media/**" filters="none" />
+		<security:intercept-url pattern="/themes/**" filters="none" />
+		<security:intercept-url pattern="/403*" filters="none" />
+		<security:intercept-url pattern="/404*" filters="none" />
+		<security:intercept-url pattern="/500*" filters="none" />
+		<security:custom-filter  ref="aopFilter" position="FIRST" />
+		<!-- casticket认证过滤器-->
+		<!-- <security:custom-filter after="PRE_AUTH_FILTER" ref="casClientTicketRememberMeFilter" /> -->
+		<!-- cas过滤器-->
+		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter" />
+		
+		<!-- spring单点退出过滤器-->
+		<security:custom-filter before="LOGOUT_FILTER" ref="requestSingleLogoutFilter" />   
+		<!-- cas单点退出过滤器-->                           
+		<security:custom-filter before="CAS_FILTER" ref="singleLogoutFilter"/> 
+		<!-- 要权限过滤器-->
+		<security:custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="permissionFilter" />
+		<!-- casticket认证过滤器，匿名的url会进入到filter进行cas再次判断 -->
+	<!-- 	<security:custom-filter after="FILTER_SECURITY_INTERCEPTOR" ref="casClientTicketRememberMeFilter" /> -->
+		<!-- <security:custom-filter after="FILTER_SECURITY_INTERCEPTOR" ref="loginFilter" /> -->
+
+		<security:custom-filter  ref="currentProfileFilter" position="LAST"/>
+	
+	<!--  <security:session-management   
+        session-authentication-strategy-ref="sessionAuthenticationStrategy"   
+        invalid-session-url="/commons/loginout.jsp" >
+         </security:session-management> -->
+        
+		</security:http>
+	<bean id="aopFilter" class="com.hotent.core.web.filter.AopFilter"></bean>
+	<bean id="currentProfileFilter" class="com.hotent.platform.web.filter.CurrentProfileFilter"></bean>
+	
+	
+	
+	<!-- 登录拦截器 -->
+	<!-- cas单点登出-->
+	<bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
+	<!-- spring单点退出过滤器-->
+	<bean id="requestSingleLogoutFilter" 
+     	  class="org.springframework.security.web.authentication.logout.LogoutFilter">
+       <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg value="${cas.url}/logout?service=${platform.url}/index.ht"/><!-- 单点退出后的返回页面-->
+        <property name="filterProcessesUrl" value="/logout" /><!-- 签听退的的url-->   
+    </bean>
+   <!-- 回话管理 -->
+  <!--  <bean id="sessionAuthenticationStrategy"  
+    class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">  
+    <constructor-arg name="sessionRegistry"  
+        ref="sessionRegistry" />  
+    <property name="maximumSessions" value="-1" />  
+</bean>  
+<bean id="sessionRegistry"  
+    class="org.springframework.security.core.session.SessionRegistryImpl" > </bean>  -->
+    <!-- 回话管理 -->
+	<!-- 单点登陆过程-->
+	
+	<bean id="loginFilter" class="com.casic.filter.LoginFilter">
+	</bean>
+	
+	<bean id="casAuthenticationFilter"
+		class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+	 	<property name="authenticationSuccessHandler" ref="simpleUrlAuthenticationSuccessHandler"/>  
+	</bean>
+
+	<!-- 登陆成功后的跳转-->
+	<bean id="simpleUrlAuthenticationSuccessHandler"  
+	    class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+	    <property name="alwaysUseDefaultTargetUrl" value="false"/>
+	    <property name="defaultTargetUrl" value="${platform.homepage}"/>  
+	</bean>
+
+	<!-- 认证管理器-->
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="casAuthenticationProvider" />
+	</security:authentication-manager>
+
+	<!-- cas认证代理-->
+	<bean id="casAuthenticationProvider"
+		class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+		<property name="userDetailsService" ref="sysUserDao" />  
+		<property name="serviceProperties" ref="serviceProperties" />
+		<property name="ticketValidator">
+			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<constructor-arg index="0" value="${cas.url}" />
+			</bean>
+		</property>
+		<property name="key" value="an_id_for_this_auth_provider_only" />
+	</bean>
+
+	<!-- 本地spring认证类-->
+	<bean id="casAuthenticationUserDetailsService"
+		class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+		<property name="userDetailsService" ref="sysUserDao" />
+	</bean>
+	<!-- 本地认证入口-->
+	<bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+		<property name="service" value="${platform.url}/j_spring_cas_security_check" /><!-- 本地认证入口-->
+		<property name="sendRenew" value="false" />
+	</bean>
+	<!-- cas登陆入口-->	
+	<bean id="casAuthenticationEntryPoint"
+		class="com.casic.cas.CasAuthenticationRedirect">
+<!-- 	<bean id="casAuthenticationEntryPoint"
+		class="org.springframework.security.cas.web.CasAuthenticationEntryPoint"> -->
+		<property name="loginUrl" value="${cas.url}/login" /><!--cas 入口-->
+		<property name="serviceProperties" ref="serviceProperties" />
+	</bean>
+	<!-- 权限过滤-->
+	<bean id="permissionFilter" class="com.hotent.core.web.filter.PermissionFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="accessDecisionManager" ref="accessDecisionManager" />
+		<property name="securityMetadataSource" ref="securityMetadataSource" />
+	</bean>
+	<!-- 跳转判断-->
+	<bean id="accessDecisionManager" class="com.hotent.core.web.security.HtDecisionManager" />
+	<!-- 权限资源-->
+	<bean id="securityMetadataSource"
+		class="org.jasig.cas.client.validation.HtSecurityMetadataSource" scope="singleton">
+		<property name="anonymousUrls">
+			<set>
+				<value>/</value>
+				<value>/pub/image/ajaxUploadIE.ht</value>
+				<value>/pub/image/ajaxUpload.ht</value>
+				<value>/pub/image/toCloudUpload.ht</value>
+				<value>/tenant/saveOpenAccount.ht</value>
+				<value>/api/registerNoBack.ht</value>
+				<value>/api/getOrgInfoBySysid.ht</value>
+				<value>/api/getOrgInfoByOid.ht</value>
+				<value>/api/getUserInfoByAcc.ht</value>
+				<value>/api/getUserInfoByOid.ht</value>
+				<value>/api/getOrgByPrKey.ht</value>
+				<value>/api/getOrgInfoBySysid.ht</value>
+				<value>/api/getOrgInfoByOid.ht</value>
+				<value>/api/getOrgInfoByOrgId.ht</value>
+				<value>/api/getUserInfoByAcc.ht</value>
+				<value>/api/getUserInfoByOid.ht</value>
+				<value>/api/getUserByRole.ht</value>
+				<value>/api/getUserAndOrgInfo.ht</value>
+				<value>/api/getUserAndOrgInfoNew.ht</value>
+				<value>/api/getOrgByOrgId.ht</value>
+				<value>/api/getRuleByRole.ht</value>
+				<value>/api/getRoleByUser.ht</value>
+				<value>/api/getBranchByOri.ht</value>
+				<value>/api/getOrgInfoAndManagerByOrgId.ht</value>				
+				<value>/api/isAdmin.ht</value>				
+				<value>/api/getResById.ht</value>
+				<value>/api/getResByParentId.ht</value>
+				<value>/api/delRes.ht</value>
+				<value>/api/getRessByRole.ht</value>
+				<value>/api/updateResoById.ht</value>
+				<value>/api/getResRolById.ht</value>
+				<value>/api/getSysResBySysId.ht</value>
+				<value>/api/addResForRole.ht</value>
+				<value>/api/getSysRoleBySysId.ht</value>
+				<value>/api/isOpen.ht</value>
+				<value>/api/getUserByNameAndPas.ht</value>	
+				<value>/api/subRegisterUser.ht</value>
+						
+				<value>/api/addTenant.ht</value>	
+				<value>/api/getSubSystemBysysId.ht</value>	
+				<value>/api/getSubSystemInfo.ht</value>	
+				<value>/api/getInfoByAccountAndPassword.ht</value>	
+				<value>/api/getUserOrgByAccount.ht</value>	
+				
+					
+				
+				<value>/api/checkMobileIsExist.ht</value>		
+				<value>/api/getAllSysOrgInfo.ht</value>		
+				<value>/tenant/saveCerti.ht</value>
+				<value>/tenant/saveOrg.ht</value>
+				<value>/platform/system/api/tenantAdd.ht</value>
+				<value>/tenant/index.ht</value>
+				
+				<value>/tenant/save.ht</value>
+				<value>/tenant/getData.ht</value>
+				<value>/tenant/getTreeByTenant.ht</value>
+				<value>/tenant/saveNewRole.ht</value>
+				<value>/tenant/assignDepartMent.ht</value>
+				<value>/tenant/certifiedFeedback.ht</value>
+				<value>/tenant/address.ht</value>
+				<value>/tenant/asynServlet.ht</value>
+				<value>/tenant/certified.ht</value>
+				<value>/tenantAddress/save.ht</value>
+				<value>/tenantAddress/getTenantAddressByType.ht</value>
+				<value>/tenantAddress/updateIsDefault.ht</value>
+				<value>/tenantAddress/delAddress.ht</value>
+				<value>/tenantAddress/editAddress.ht</value>
+				<value>/tenantAddress/showAddress.ht</value>
+				<value>/tenant/saveSucess.ht</value>
+				<value>/tenant/getCascadeJsonData.ht</value>
+				<value>/tenant/editNew1.ht</value>
+				<value>/tenant/editInfo.ht</value>
+				<value>/tenant/getBankId.ht</value>
+				<value>/user/regPostCloud_v2.ht</value>
+				<value>/code/ajaxSendVerifyCode.ht</value>
+				<value>/login.ht</value>
+				<value>/user/reg_cloud.ht</value>
+				<!-- 添加找回密码 begin -->
+				
+				<value>/code/ajaxCheckSendNumber.ht</value>
+				<value>/user/checkPhoneRepeatString.ht</value>
+				<value>/user/isChenkString.ht</value>
+				<value>/user/checkAccountRepeatString.ht</value>
+				
+				
+				<value>/user/findPwd.ht</value>
+				<value>/user/resetPwd.ht</value>
+				<value>/code/ajaxSendVerifyCodeFind.ht</value>
+				<value>/code/ajaxSendVerifyCodeDataMap.ht</value>
+				<value>/code/sendEmailVerifyCodeFind.ht</value>
+				<value>/pages/jsp/resetPwd/annotation.jsp</value>
+				<value>/user/isParamExist.ht</value>
+				<!-- 添加找回密码 end -->
+				<value>/user/updateUser.ht</value>
+				<value>/user/checkUserNameRepeat.ht</value>
+				<value>/user/checkEmailRepeat.ht</value>
+				<value>/user/checkPhoneRepeat.ht</value>
+				<value>/user/reg_personal_saveuser.ht</value>
+				<value>/user/perregSuccess.ht</value>
+				
+				<value>/user/authorize.ht</value>
+				<value>/user/authorizeFast.ht</value>
+				<value>/user/ajaxauthorizeLogin.ht</value>
+				<value>/user/openProtocol.ht</value>
+				<value>/user/isParamExistReturnString.ht</value>
+				<value>/user/isCheckCode.ht</value>
+				
+				
+				<value>/user/updatePwd.ht</value>
+				<value>/user/checkOrgId.ht</value>
+				<value>/user/isChenk.ht</value>
+				<value>/user/reg_cloud_2.ht</value>
+				<value>/user/reg_personal_2.ht</value>
+				<value>/user/reg_personal_cloud.ht</value>
+				<value>/user/checkAccountRepeat.ht</value>
+				<value>/user/checkOrgNameRepeat.ht</value>
+				<value>/user/saveUserAndOrgInfo.ht</value>
+				<value>/user/regSuccess.ht</value>
+				<value>/user/xieyi.ht</value>
+				<value>/user/loginXieYi.ht</value>
+				<value>/user/doLogin.ht</value>
+				<value>/user/checkSystemId.ht</value>
+				<value>/userGuide.ht</value>
+				<value>/login.jsp</value>
+				<value>/platform/system/sysFile/fileUpload.ht</value>
+				<value>/platform/bpm/bpmDefinition/getXmlImport.ht</value>
+				<value>/tenant/nameValid.ht</value>
+				<value>/index.ht</value>
+				<value>/joinStandard.ht</value>
+				<value>/index.jsp</value>
+				<value>/platform/system/sysOrg/getTreeData.ht</value>
+				<value>/tenant/getTreeData.ht</value>
+				<value>/tenant/get.ht</value>
+				<value>/tenant/edit.ht</value>
+				<value>/tenant/save.ht</value>
+				<value>/tenant/getGrade.ht</value>
+				<value>/tenant/orgdel.ht</value>
+				<value>/tenant/saveTenantBase.ht</value>
+				<value>/tenant/saveRole.ht</value>
+				<!-- 企业审核 -->
+				<value>/tenant/detail.ht</value>
+				<value>/tenant/depTenant.ht</value>
+				<value>/tenant/assignRole.ht</value>
+				<value>/api/subContact.ht</value>
+				<value>/api/getUserInfoByAcc.ht</value>
+				<value>/api/getOrgInfoByOrgId.ht</value>
+				<value>/api/registerNoBack.ht</value>
+				<value>/urlMonitor/save.ht</value>
+				<value>/urlMonitor/get.ht</value>
+				<value>/urlMonitor/getDetail.ht</value>
+				<value>/urlMonitor/graphDisplay.ht</value>
+				<value>/urlMonitor/loadData.ht</value>
+				<value>/urlMonitor/echarts.ht</value>
+				<!-- 添加安全设置相关  begin-->
+				<value>/security/changeMobile.ht</value>
+				<value>/security/changeMobileStep2.ht</value>
+				<value>/security/changeMobileStep3.ht</value>
+				<value>/security/updateMobile.ht</value>
+				<value>/security/checkVerifyCode.ht</value>
+				<value>/security/bindingMobile.ht</value>
+				<value>/security/bindingMobileSuccess.ht</value>
+				<value>/security/changeEmail.ht</value>
+				<value>/security/changeEmailStep2.ht</value>
+				<value>/security/changeEmailStep3.ht</value>
+				<value>/security/updateEmail.ht</value>
+				<value>/security/checkEmailVerifyCode.ht</value>
+				<value>/code/sendEmailVerifyCode.ht</value>
+				<value>/security/validatingEmail.ht</value>
+				<value>/security/validatingEmailSuccess.ht</value>
+				<value>/security/updatePwd.ht</value>
+				<!-- 添加安全设置相关 end -->
+				<!-- 添加用户同步 begin -->
+				<value>/user/edit.ht</value>
+				<value>/user/save.ht</value>
+				<value>/user/importCompany.ht</value>
+				<value>/user/downLoad.ht</value>
+				<value>/user/ajax_list.ht</value>
+				<value>/user/ucAPI.ht</value>
+				<value>/subsystem/synchronizeForSystem.ht</value>
+				<!-- 添加用户同步 end -->
+				<!-- 用户中心API begin -->
+				<value>/ucAPI.ht</value>
+				<value>/ucAPIIntroduction1.ht</value>
+				<value>/ucAPIIntroduction2.ht</value>
+				<value>/ucAPIIntroduction3.ht</value>
+				<value>/ucAPIIntroduction4.ht</value>
+				<value>/ucAPIIntroduction5.ht</value>
+				<value>/ucAPIIntroduction6.ht</value>
+				<value>/ucAPIIntroduction7.ht</value>
+				<value>/ucAPIIntroduction8.ht</value>
+				<value>/ucAPIIntroduction9.ht</value>
+				<value>/ucAPIIntroduction10.ht</value>
+				<value>/ucAPIIntroduction11.ht</value>
+				<value>/ucAPIIntroduction12.ht</value>
+				<value>/errorCodeInstruction.ht</value>
+				<value>/encryptData.ht</value>				
+				<value>/ucAPIIntro1.ht</value>
+				<value>/ucAPIIntro2.ht</value>
+				<value>/ucAPIIntro3.ht</value>
+				<value>/ucAPIIntro4.ht</value>
+				<value>/ucAPIIntro5.ht</value>
+				<value>/ucAPIIntro6.ht</value>
+				<value>/ucAPIIntro7.ht</value>
+				<value>/ucAPIIntro8.ht</value>
+				<value>/ucAPIIntro9.ht</value>
+				<value>/ucAPIIntro10.ht</value>				
+				<!-- 用户中心API end -->
+				<!-- 接入规范 begin -->
+				<value>/joinStandard.ht</value>
+				<value>/userStandard.ht</value>
+				<value>/userStandardAdd.ht</value>
+				<value>/userStandardUpdate.ht</value>
+				<value>/userStandardDelete.ht</value>
+				<value>/enterpriseStandard.ht</value>
+				<value>/enterpriseStandardAdd.ht</value>
+				<value>/enterpriseStandardUpdate.ht</value>
+				<value>/enterpriseStandardDelete.ht</value>
+				<value>/authenticationStandard.ht</value>
+				<value>/authenticationStandardAdd.ht</value>
+				<value>/authenticationStandardUpdate.ht</value>
+				<value>/authenticationStandardDelete.ht</value>
+				<value>/loadData.ht</value>
+				<value>/branchStandard.ht</value>
+				<value>/branchStandardAdd.ht</value>
+				<value>/branchStandardUpdate.ht</value>
+				<value>/branchStandardDelete.ht</value>
+				<value>/goodsStandard.ht</value>
+				<value>/goodsStandardAdd.ht</value>
+				<value>/goodsStandardUpdate.ht</value>
+				<value>/goodsStandardDelete.ht</value>
+				<value>/passwordStandard.ht</value>
+				<value>/passwordStandardAdd.ht</value>
+				<value>/passwordStandardUpdate.ht</value>
+				<value>/passwordStandardDelete.ht</value>
+				<value>/openIdStandard.ht</value>
+				<value>/openIdStandardAdd.ht</value>
+				<value>/openIdStandardUpdate.ht</value>
+				<value>/openIdStandardDelete.ht</value>
+				<value>/commonProblems.ht</value>
+				<value>/errorCode.ht</value>
+				<value>/community.ht</value>
+				<value>/question/getAllQuestionByPage.ht</value>
+				<value>/question/save.ht</value>
+				<value>/question/getSolvedQuestionByPage.ht</value>
+				<value>/question/getUnsolvedQuestionByPage.ht</value>
+				<value>/question/getMyQuestionByPage.ht</value>
+				<value>/question/updateStatus.ht</value>
+				<!-- <value>/question/add.ht</value> -->
+				<value>/reply/communityReply.ht</value>
+				<value>/reply/replyQuestion.ht</value>
+				<value>/reply/getAllReply.ht</value>
+				<value>/reply/updatePraise.ht</value>
+				<!-- 接入规范 end -->
+				
+				<value>/api/getUserByToken.ht</value>
+				<value>/api/getUser.ht</value>
+				<value>/api/userBatchRegistercheck.ht</value>
+				<value>/api/userBatchRegisterNew.ht</value>
+				<value>/oauth/show.ht</value>
+				<value>/oauth/authorize.ht</value>
+				<value>/oauth/token.ht</value>
+				<value>/oauth/me.ht</value>
+				<value>/oauth/getToken.ht</value>
+				<value>/cas/ajaxCasLogin.ht</value>
+				
+				<value>/log/save.ht</value>
+				
+				
+				<!-- 账户同步 -->
+				<value>/synchronize/byaccount.ht</value>
+				<value>/synchronize/checkship.ht</value>
+				<value>/synchronize/unbind.ht</value>
+				<value>/synchronize/getuserid.ht</value>
+		
+				<value>/synchronize/checkaccount.ht</value>
+				<value>/synchronize/checkaccountbymobile.ht</value>
+				<!-- 云路接口 -->
+				<value>/accountinfo/activation.ht</value>
+				<value>/accountinfo/getinfo.ht</value>
+				<value>/accountinfo/activation.ht</value>
+				<!-- 短信验证码与运网快速注册 -->
+				<value>/api/getVerfifyCode.ht</value>
+				<value>/api/registerForCasic.ht</value>
+				<value>/api/checkVerfifyCode.ht</value>
+			</set>
+		</property>
+	</bean>
+	
+	
+</beans>

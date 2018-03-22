@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.log.model.config.AhRecord">
+	<resultMap id="AhRecord" type="com.casic.log.model.config.AhRecord">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="calltime" column="callTime" jdbcType="TIMESTAMP"/>
+		<result property="issuccess" column="isSuccess" jdbcType="VARCHAR"/>
+		<result property="addr" column="addr" jdbcType="VARCHAR"/>
+		<result property="failreason" column="failReason" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,callTime,isSuccess,addr,failReason
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(calltime)"> AND callTime  =#{calltime} </if>
+			<if test="@Ognl@isNotEmpty(begincalltime)"> AND callTime  >=#{begincalltime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endcalltime)"> AND callTime <![CDATA[ <=#{endcalltime,jdbcType=DATE}]]> </if>
+			<if test="@Ognl@isNotEmpty(issuccess)"> AND isSuccess  LIKE #{issuccess}  </if>
+			<if test="@Ognl@isNotEmpty(addr)"> AND addr  LIKE #{addr}  </if>
+			<if test="@Ognl@isNotEmpty(failreason)"> AND failReason  LIKE #{failreason}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.log.model.config.AhRecord">
+		INSERT INTO sys_ah_record
+		(id,callTime,isSuccess,addr,failReason)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{calltime,jdbcType=TIMESTAMP}, #{issuccess,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, #{failreason,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_ah_record 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.log.model.config.AhRecord">
+		UPDATE sys_ah_record SET
+		callTime=#{calltime,jdbcType=TIMESTAMP},
+		isSuccess=#{issuccess,jdbcType=VARCHAR},
+		addr=#{addr,jdbcType=VARCHAR},
+		failReason=#{failreason,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AhRecord">
+		SELECT <include refid="columns"/>
+		FROM sys_ah_record
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getAll" resultMap="AhRecord">
+		SELECT <include refid="columns"/>
+		FROM sys_ah_record   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

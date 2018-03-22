@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decorators defaultdir="/decorators">
+    <!--excludes结点则指定了哪些路径的请求不使用任何模板-->
+    <excludes>
+    	<pattern>/index*</pattern>
+        <pattern>/login*</pattern>
+        <pattern>/error*</pattern>
+    </excludes>    
+
+<!--     <decorator name="home" page="decHome.jsp"> -->
+<!--         <pattern>/cloud/console/home.ht</pattern> -->
+<!--     </decorator> -->
+</decorators>

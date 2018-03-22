@@ -1,0 +1,258 @@
+<%@ page language="java" import="java.util.*,java.io.File" pageEncoding="utf-8"%>
+<%@include file="/commons/global.jsp"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>	
+	<%@ include file="/commons/meta.jsp"%>
+	<%@include file="/commons/include/form.jsp" %>
+	<%
+		String pathSeparator = File.pathSeparator;
+	%>
+	<link rel="stylesheet" type="text/css" href="${ctx}/pintuer/pintuer.css"/>
+	<script language="JavaScript" type="text/javascript" src="${ctx}/pintuer/pintuer.js"></script>
+	<script language="JavaScript" type="text/javascript" src="${ctx}/js/uploadPreview.js"></script>
+	<!-- 解决ie 6 7 8 下json未定义问题 -->
+	<!--[if lt IE 9]>
+	<![endif]-->
+	<script type="text/javascript" src="${ctx}/js/hotent/json2.js"></script>
+	<script type="text/javascript" src="${ctx}/js/layer/layer.js"></script>
+	<link rel="stylesheet" type="text/css" href="${ctx}/js/layer/skin/layer.css" />
+	<script type="text/javascript" src="${ctx}/js/hotent/ajaxfileupload.js"></script>
+	<base target="_parent" />
+	<title>图片上传</title>	
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">	
+	<script>
+		$(function(){
+			//设置input type = file 透明
+			$('#uploadFile').css({'opacity':'0'}); 
+			$('input[name=file]').css({'opacity':'0'}); 
+			new uploadPreview({ UpBtn: "uploadFile", DivShow: "imgdiv", ImgShow: "imgShow" });
+			$("#uploadFile").live("change",function(){
+				new uploadPreview({ UpBtn: "uploadFile", DivShow: "imgdiv", ImgShow: "imgShow"});
+				$("#imgdiv").removeClass("icon-file-image-o");
+				$("#imgdiv").removeClass("defaultImg");
+				$("#manageImage").show();
+				$("#manageImageInvalid").hide();
+			});
+		});
+		function addImage(){
+			$("#uploadFile").click();
+		}
+		function cancleUpload(){
+			$("#imgShow").removeAttr("src");
+			$("#imgdiv").addClass("icon-file-image-o");
+			$("#imgdiv").addClass("defaultImg");
+			$("#manageImage").hide();
+			$("#manageImageInvalid").show();
+			$("#continueUpload").hide();//显示是否继续上传按钮
+		}
+	</script>
+	<script type="text/javascript">
+	var maxUploadNum = 4;//最大上传5张图片
+	var indexNum = 0;
+	//定时器对象
+	var uploadProcessTimer = null;
+
+	//获取文件上传进度
+	function getFileUploadProcess() {
+		/* $.get('/upload/getFileProcessServlet', function(data) {
+			$('#fileUploadProcess').html(data);
+		}); */
+	}
+	//ajax上传图片
+	function ajaxFileUpload()
+	{
+		//设置加载图标的显示
+		var index = layer.load(0, {
+		    shade: [0.6,'#333'] //0.1透明度的白色背景
+		}); 
+		//uploadProcessTimer = window.setInterval(getFileUploadProcess, 20);
+		var url = '${ctx}/pub/image/ajaxUpload.ht';
+		/* if (navigator.userAgent.indexOf("MSIE") > -1) {
+			url = '${ctx}/cloud/pub/image/ajaxUploadIE.ht';
+		} */
+		if (!!window.ActiveXObject || "ActiveXObject" in window) {
+			url = '${ctx}/pub/image/ajaxUploadIE.ht';
+		}
+		$.ajaxFileUpload
+		({
+			url:url,
+			secureuri:false,
+			fileElementId:'uploadFile',
+			dataType: 'json',
+			data:{name: $('#uploadFile').val()},
+			success: function (data, status)
+			{
+				if(data.resultMsg.indexOf("error") == -1){
+					layer.msg('上传图片成功',{icon: 1,time: 1500});
+					$(".layui-layer").css({'left':'30%','top':'45%','right':'30%'});
+					//alert("success:"+data);
+					layer.closeAll('loading'); //关闭加载层
+					/* $("#enableAdd").hide();//上传成功后，添加按钮置为不可用
+					$("#disableAdd").show(); */
+					$("#previewButton").removeClass("bg-main");
+					$("#previewButton").addClass("bg-gray");
+					$("#previewButton #uploadFile").attr("disabled", "disabled"); 
+					$("#manageImage").hide();
+					$("#manageImageInvalid").hide();
+					$("#continueUpload").show();//显示是否继续上传按钮
+					$("#dataCache").append("<span>"+JSON.stringify(data)+"</span>");
+					//显示到已上传图片区域
+					var src = '${fileCtx}/'+data.filePath.replace(/[;]/gi, '/');
+					$("#alreadyUploadedImage img:eq("+indexNum+")").parent().removeClass("icon-file-image-o");
+					$("#alreadyUploadedImage img:eq("+indexNum+")").parent().removeClass("defaultImg-small");
+					$("#alreadyUploadedImage img:eq("+indexNum+")").parent().append('<span class="badge bg-red icon-times-circle" style="padding:3px 4px;right:-9px;display:inline;" onclick="removeImg(this);"></span>');
+					$("#alreadyUploadedImage img:eq("+indexNum+")").attr("src",src);
+				}else{
+					layer.closeAll('loading'); //关闭加载层
+					//这里处理的是网络异常，返回参数解析异常，DOM操作异常
+					layer.alert("上传发生异常");
+				}
+			},
+			error: function (data, status, e)
+			{
+				//当为ie11浏览器的时候，后台执行成功，但是会走这得js，所以加一下判断
+				if (!!window.ActiveXObject || "ActiveXObject" in window) {
+					var jsonList = JSON.parse(data.responseText);
+					if(jsonList.resultMsg.indexOf("success") != -1){
+						layer.msg('上传图片成功',{icon: 1,time: 1500});
+						layer.closeAll('loading'); //关闭加载层
+						$("#previewButton").removeClass("bg-main");
+						$("#previewButton").addClass("bg-gray");
+						$("#previewButton #uploadFile").attr("disabled", "disabled"); 
+						$("#manageImage").hide();
+						$("#manageImageInvalid").hide();
+						$("#continueUpload").show();//显示是否继续上传按钮
+						$("#dataCache").append("<span>"+JSON.stringify(jsonList)+"</span>");
+						//显示到已上传图片区域
+						var src = '${fileCtx}/'+jsonList.filePath.replace(/[;]/gi, '/');
+						$("#alreadyUploadedImage img:eq("+indexNum+")").parent().removeClass("icon-file-image-o");
+						$("#alreadyUploadedImage img:eq("+indexNum+")").parent().removeClass("defaultImg-small");
+						$("#alreadyUploadedImage img:eq("+indexNum+")").parent().append('<span class="badge bg-red icon-times-circle" style="padding:3px 4px;right:-9px;display:inline;" onclick="removeImg(this);"></span>');
+						$("#alreadyUploadedImage img:eq("+indexNum+")").attr("src",src);
+						return false;
+					}
+				}
+				layer.closeAll('loading'); //关闭加载层
+				//这里处理的是网络异常，返回参数解析异常，DOM操作异常
+				layer.alert("上传发生异常");
+			}
+		})
+
+		return false;
+	}
+	//确认上传
+	function confirmUpload(){
+		var jsonArr = new Array();
+		var index = 0;
+		$("#dataCache span").each(function(){
+			var jsonText = $(this).text().replace(/[;]/gi, '/');;
+			var jsonObject = eval("(" + jsonText + ")"); 
+			jsonArr[index] = jsonObject;
+			index++;
+		});
+		var _callback = '${_callback}';
+		//如果指定了回掉函数就用指定的，没有指定就用默认的
+		if(_callback == null || _callback == undefined || _callback.length==0){
+			parent.imageDialogCallback(jsonArr);
+		}else{
+			eval(_callback); 
+		}
+		var iframeIndex = parent.layer.getFrameIndex(window.name); //获取窗口索引
+		parent.layer.close(iframeIndex);
+	}
+	
+	</script>
+	<style>
+		.dataTable {
+			margin: 30px 20px 20px 20px;
+		}
+	
+		.dataTable table td{
+			padding:5px 5px;
+		}
+		#appleFile{
+			width:100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.imgContainer{
+			width:300px;
+			height:160px;
+			margin-bottom:20px;
+			padding:5px;
+		}
+		.defaultImg{
+			color: #ddd;
+		    font-size: 100px;
+		    text-align: center;
+		}
+		.defaultImg-small{
+			color: #ddd;
+		    font-size: 30px;
+		    padding-top: 20px !important;
+		    text-align: center;
+		}
+		.container img[src=''],
+		.container img:not([src]) {opacity:0;filter: alpha(opacity=0);}
+		.file {
+		    color:#fff !important;
+		    padding:7px 32px;
+		    border-radius: 4px;
+		    font-size:14px !important;
+		    cursor:pointer;
+		}
+		.file:hover {
+		    background:#00aabb;
+		}
+		.file input {
+		    position: absolute;
+		    font-size: 50px; 
+		    left:-500px;
+		    right: 0;
+		    top: 0;
+		    opacity: 0;
+		    filter: alpha(opacity=0);
+		    cursor:pointer;
+		    height:70px;
+		}
+		img{
+		  filter:alpha(opacity=0);
+		}
+		。layui-layer { top:50% !important;}
+	</style>
+</head>
+<body>	
+<div class="container" style="padding:10px;width:300px; margin-left:99px;display:inline-block;">
+	<div class="line" style="margin-bottom:10px;">
+	<!-- <button class="button icon-plus bg-main" onclick="addImage();" id="enableAdd">添加图片</button>
+	<button class="button icon-plus bg-gray" id="disableAdd" style="display:none">添加图片</button> -->
+	<div style="margin-top:10px;"><form method="post" action="${ctx}/cloud/pub/image/ajaxUpload.ht" id="fileForm" name="fileForm" enctype="multipart/form-data">
+	<!-- <input id="uploadFile" name="file" type="file" /> -->
+	<a href="javascript:;" class="icon-plus bg-main file" id="previewButton">添加图片<input type="file" name="file" id="uploadFile"/></a>
+	</form></div>
+	</div>
+	<div class="line" id="imageContainer">
+		<div class="line-big border imgContainer icon-file-image-o defaultImg" id="imgdiv">
+			<img id="imgShow" width="290" height="150"/>
+		</div>
+		<div class="line-big" id="manageImage" style="display:none">
+			<div class="x6"><button class="button icon-plus bg-main" style="width:100%" onclick="ajaxFileUpload();">上传</button></div>
+			<div class="x6"><button class="button icon-times bg-red" style="width:100%" onclick="cancleUpload();">取消</button></div>
+		</div>
+		<div class="line-big" id="manageImageInvalid">
+			<div class="x6"><button class="button icon-plus bg-gray" style="width:100%">上传</button></div>
+			<div class="x6"><button class="button icon-times bg-gray" style="width:100%">取消</button></div>
+		</div>
+		<div class="line-big" id="continueUpload"  style="display:none">
+			<div class="x12"><button class="button icon-check bg-main" style="width:100%" onclick="confirmUpload();">确认选择</button></div>
+		</div>
+	</div>
+</div>
+<div id="dataCache" style="display:none">
+
+</div>
+</body>
+</html>

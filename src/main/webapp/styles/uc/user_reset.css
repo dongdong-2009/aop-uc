@@ -1,0 +1,19 @@
+﻿/*reset css begin*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td { margin:0; padding:0; }
+body { font-size:14px; color:#666; font-family: Microsoft YaHei; background:#fff;}
+fieldset, img { border:0; }
+ol, ul { list-style:none; }
+h1, h2, h3, h4, h5, h6{ font-size:100%; }
+em { font-style:normal; }
+input, button, select, textarea { outline:none; }
+textarea { resize:none; } 
+p{ text-align:justify; text-justify:distribute;}
+a { color: #666; text-decoration:none; }
+a:hover { color:#ff7428; text-decoration:none; }
+.f_left{ float:left; display:inline;}
+.f_right{ float:right;}
+.t_left{ text-align:left;}
+.t_center{ text-align:center;}
+.t_right{ text-align:right;}
+.clear{ clear:both;}
+/*reset css end*/

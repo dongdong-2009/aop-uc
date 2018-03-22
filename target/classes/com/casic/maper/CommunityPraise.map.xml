@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.community.model.PraiseBean">
+	<resultMap id="praiseMap" type="com.casic.community.model.PraiseBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="userId" column="userId" jdbcType="VARCHAR"/>
+		<result property="replyId" column="replyId" jdbcType="VARCHAR"/>
+		<result property="status" column="status" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="columns">
+		id,userId,replyId,status
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+		</where>
+			
+	</sql>
+
+	<insert id="add" parameterType="com.casic.community.model.PraiseBean">
+		INSERT INTO sys_community_praise  
+		(id,userId,replyId,status)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{userId,jdbcType=VARCHAR},#{replyId,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
+	</insert>
+	<update id="updatePraise" parameterType="com.casic.community.model.PraiseBean">
+		update sys_community_praise  set status=#{status}
+		where  id=#{id}
+	</update>
+	
+	<select id="getAllCountsByReplyId" parameterType="java.lang.String" resultType="com.casic.community.model.PraiseBean">
+	  SELECT * FROM sys_community_praise p where p.replyId=#{replyId} 
+	</select>
+	
+	
+	<select id="getAllPraise" parameterType="java.lang.Long" resultType="com.casic.community.model.PraiseBean">
+	    SELECT * FROM sys_community_praise p WHERE p.replyId=#{replyId}
+	</select>
+	
+	
+
+</mapper>

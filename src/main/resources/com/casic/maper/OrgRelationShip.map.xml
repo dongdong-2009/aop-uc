@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.base.model.config.OrgRelationShip">
+	<resultMap id="OrgRelationShip" type="com.casic.base.model.config.OrgRelationShip">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="partnerId" column="PARTNER_ID" jdbcType="VARCHAR"/>
+		<result property="entpId" column="ENTP_ID" jdbcType="NUMERIC"/>
+		<result property="status" column="STATUS" jdbcType="VARCHAR"/>
+		<result property="applyTime" column="APPLY_TIME" jdbcType="TIMESTAMP"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,PARTNER_ID,ENTP_ID,STATUS,APPLY_TIME
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(partnerId)"> AND PARTNER_ID  =#{partnerId} </if>
+			<if test="@Ognl@isNotEmpty(entpId)"> AND ENTP_ID  =#{entpId} </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND STATUS  LIKE #{status}  </if>
+			<if test="@Ognl@isNotEmpty(applyTime)"> AND APPLY_TIME  =#{applyTime} </if>
+			<if test="@Ognl@isNotEmpty(beginapplyTime)"> AND APPLY_TIME  >=#{beginapplyTime,jdbcType=DATE} </if>
+			<if test="@Ognl@isNotEmpty(endapplyTime)"> AND APPLY_TIME <![CDATA[ <=#{endapplyTime,jdbcType=DATE}]]> </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.base.model.config.OrgRelationShip">
+		INSERT INTO sys_orgRelationShip_mapping
+		(id,PARTNER_ID,ENTP_ID,STATUS,APPLY_TIME)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{partnerId,jdbcType=VARCHAR}, #{entpId,jdbcType=NUMERIC}, #{status,jdbcType=VARCHAR}, #{applyTime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_orgRelationShip_mapping 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.base.model.config.OrgRelationShip">
+		UPDATE sys_orgRelationShip_mapping SET
+		PARTNER_ID=#{partnerId,jdbcType=NUMERIC},
+		ENTP_ID=#{entpId,jdbcType=NUMERIC},
+		STATUS=#{status,jdbcType=VARCHAR},
+		APPLY_TIME=#{applyTime,jdbcType=TIMESTAMP}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="OrgRelationShip">
+		SELECT <include refid="columns"/>
+		FROM sys_orgRelationShip_mapping
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getshipbypartnerid" parameterType="java.lang.String" resultMap="OrgRelationShip">
+	
+		SElECT  <include refid="columns"/>
+		FROM  sys_orgRelationShip_mapping
+		WHERE
+		PARTNER_ID=#{partnerId}
+	</select>
+	
+	
+	<select id="getAll" resultMap="OrgRelationShip">
+		SELECT <include refid="columns"/>
+		FROM sys_orgRelationShip_mapping   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

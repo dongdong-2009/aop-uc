@@ -1,0 +1,90 @@
+﻿@charset "utf-8";
+/* CSS Document */
+
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,menu{margin:0;padding:0;}
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{display:block;}
+table{border-collapse:collapse;border-spacing:0;}
+caption,th{text-align:left;font-weight:normal;}
+html,body,fieldset,img,iframe,abbr{border:0;}
+i,cite,em,var,address,dfn{font-style:normal;}
+[hidefocus],summary{outline:0;}
+li{list-style:none;}
+h1,h2,h3,h4,h5,h6,small{font-size:100%;}
+sup,sub{font-size:83%;}
+pre,code,kbd,samp{font-family:inherit;}
+q:before,q:after{content:none;}
+textarea{overflow:auto;resize:none;}
+label,summary{cursor:default;}
+a,button{cursor:pointer;}
+h1,h2,h3,h4,h5,h6,em,strong,b{font-weight:normal;}
+del,ins,u,s,a,a:hover{text-decoration:none;}
+body,textarea,input,button,select,keygen,legend{font: normal 14px Microsoft Yahei, Arial, Helvetica, sans-serif;color:#666;outline:0;}
+input,textarea,select{outline: none; border: none; background-color: transparent;}
+body{background:#fff;}
+a,a:hover{color:#666;}
+.clearfix {*zoom: 1}
+.clearfix:after {
+    content: "\00A0";
+    display: block;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    clear: both;
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden
+}
+.f_left{ float:left; display:inline;}
+.f_right{ float:right;}
+.t_left{ text-align:left;}
+.t_center{ text-align:center;}
+.t_right{ text-align:right;}
+
+/*------公共头部开始------*/
+.aopIndex_header { height: 64px; background-color: #4E4E4E; width: 100%; min-width: 1200px;}
+.aopIndex_header_c { padding: 5px; }
+.aopIndex_header_l { width: 173px; height: 49px; background: url(../uc/images/aop_logo.png) left top no-repeat }
+.aopIndex_header_l a { background-color: transparent; display: block; text-indent: -99999px; width: 100%; height: 100%; }
+.aopIndex_header_r { height: 54px; line-height: 54px; color: #D9D9D9; }
+.aopIndex_header_r p { display: inline; }
+.aopIndex_login { display: inline; padding-left: 32px; }
+.aopIndex_login a { padding: 0 3px; color: #D9D9D9; }
+.aopIndex_login a:hover, .aopIndex_login .active { color: #FD5152; }
+/*------公共头部结束------*/
+
+/*------公共导航开始-------*/
+.aopIndex_nav_c { padding: 16px 20px 0; }
+.aopIndex_nav_l { padding-left: 30px; }
+.aopIndex_nav_l li { padding: 0 21px; float: left; }
+.aopIndex_nav_l a { display: inline-block; padding: 0 23px; border-bottom: solid 5px transparent; font-size: 18px; height: 34px; line-height: 34px; _border-bottom-color: #fff; }
+.aopIndex_nav_l a:hover, .aopIndex_nav_l a.active { border-bottom-color: #01ACD1; color: #01ACD1; transition: border-color .35s ease-in .15s }
+.aopIndex_nav_input { height: 24px; width: 220px; border: solid 1px #C9C9C9; padding: 0 5px; }
+.aopIndex_nav_input input { width: 100%; height: 24px; line-height: 24px; }
+.aopIndex_nav_search { padding: 0 5px; }
+.aopIndex_nav_search a { padding: 5px; color: #656565; height: 26px; line-height: 26px; }
+.aopIndex_nav_search a:hover { color: #01ACD1; }
+/*------公共导航结束-------*
+
+/*公共底部 begin*/
+.block{width:1230px;margin:0 auto;position:relative;height:100%;}
+.footer{background:url(../uc/images/j25.jpg) no-repeat center top;padding-top:160px;position:relative;height:255px; margin-top:80px;}
+.footer .box {position:relative;background:url(../uc/images/p33.png) no-repeat center 15px;height:200px;}
+.footer .box ul li{font-size:14px;color:#bfbfbf;text-align:center;padding-bottom:5px;}
+.footer .box ul li a{ color:#bfbfbf;}
+.footer .box ul {position:absolute;top:0;width: 170px;}
+.footer .box ul li.num{font-size:30px;color:#63a9e9;font-family:'Impact';}
+.footer .box ul li.t{font-size:16px;color:#fff;padding:10px 0;}
+.footer .box .ul1{left:130px;}
+.footer .box .ul2{left:330px;}
+.footer .box .ul3{left:510px;}
+.footer .box .ul4{left:710px;}
+.footer .box .ul5{left:930px;width:201px;}
+.footer .box .ul4 a{line-height:22px;}
+.footer .box .ul5 span{float:left;width:95px;overflow:hidden;}
+.footer .box .ul5 h2{font-size:14px;color:#fff;padding-top:7px;}
+.footer .box .ul5 .s2{float:right;}
+.footer .site{font-size:13px;color:#fff;text-align:center;background:url(../uc/images/bg50.png) repeat;padding:15px 0;position:absolute;bottom:0;left:0;width:100%;}
+.footer .site .l{float:left;}
+.footer .site .r{float:right;}
+.footer .site .r a{ color:#fff;}
+/*公共底部 end*/

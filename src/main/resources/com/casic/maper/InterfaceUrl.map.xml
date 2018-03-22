@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.subsysInterface.model.InterfaceUrlBean">
+	<resultMap id="InterfaceUrlBean" type="com.casic.subsysInterface.model.InterfaceUrlBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="subId" column="subId" jdbcType="NUMERIC"/>
+		<result property="subSystemName" column="sysName" jdbcType="VARCHAR"/>
+		<result property="interfaceClassifyId" column="interfaceClassifyId" jdbcType="NUMERIC"/>
+		<result property="interfaceClassifyName" column="interfaceClassifyName" jdbcType="VARCHAR"/>
+		<result property="type" column="type" jdbcType="NUMERIC"/>
+		<result property="createTime" column="createTime" jdbcType="DATE"/>
+		<result property="url" column="url" jdbcType="VARCHAR"/>
+		<result property="subIndexUrl" column="defaultUrl" jdbcType="VARCHAR"/>
+		<result property="remark1" column="remark1" jdbcType="VARCHAR"/>
+		<result property="remark2" column="remark2" jdbcType="NUMERIC"/>
+		<result property="remark3" column="remark3" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<sql id="columns">
+		u.id,u.subId,s.sysName subSystemName,s.defaultUrl subIndexUrl,u.interfaceClassifyId ,c.name interfaceClassifyName,u.type,u.createTime,u.url,u.remark1,u.remark2,u.remark3
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			1=1 and u.subId = s.systemId and u.interfaceClassifyId = c.id
+			<if test="@Ognl@isNotEmpty(id)"> AND u.id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(subId)"> AND u.subId  = #{subId}  </if>
+			<if test="@Ognl@isNotEmpty(interfaceClassifyId)"> AND u.interfaceClassifyId  =#{interfaceClassifyId}  </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)"> AND u.createTime  >=#{begincreatetime} </if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)"> AND u.createTime &lt;=#{endcreatetime}</if>
+			<if test="@Ognl@isNotEmpty(type)"> AND u.type  = #{type}  </if>
+			<if test="@Ognl@isNotEmpty(url)"> AND u.url  LIKE #{url}  </if>
+			<if test="@Ognl@isNotEmpty(remark1)"> AND u.remark1  LIKE #{remark1}  </if>
+			<if test="@Ognl@isNotEmpty(remark2)"> AND u.remark2  LIKE #{remark2}  </if>
+			<if test="@Ognl@isNotEmpty(remark3)"> AND u.remark3  LIKE #{remark3}  </if>
+			</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.subsysInterface.model.InterfaceUrlBean">
+		INSERT INTO sys_interface_url  
+		(id,subId,interfaceClassifyId,type,createTime,url,remark1,remark2,remark3)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{subId,jdbcType=NUMERIC}, #{interfaceClassifyId,jdbcType=NUMERIC}, #{type,jdbcType=NUMERIC},#{createTime,jdbcType=DATE},  #{url,jdbcType=VARCHAR},#{remark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, #{remark3,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_interface_url 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.subsysInterface.model.InterfaceUrlBean">
+		UPDATE sys_interface_url SET
+		subId=#{subId,jdbcType=NUMERIC} , 
+		interfaceClassifyId=#{interfaceClassifyId,jdbcType=NUMERIC} , 
+		createTime=#{createTime,jdbcType=DATE} , 
+		type=#{type,jdbcType=NUMERIC} , 
+		url=#{url,jdbcType=VARCHAR} ,
+		remark1=#{remark1,jdbcType=VARCHAR} , 
+		remark2=#{remark2,jdbcType=VARCHAR} ,
+		remark3=#{remark3,jdbcType=VARCHAR} 
+		WHERE
+		id=#{id}
+	</update>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="InterfaceUrlBean">
+		SELECT <include refid="columns"/> FROM  sys_interface_classify c,sys_interface_url u,sys_subsystem s 	WHERE 1=1 and u.subId = s.systemId and u.interfaceClassifyId = c.id and	u.id=#{id}
+	</select>
+	
+	
+	<select id="getAll" resultMap="InterfaceUrlBean">
+		SELECT <include refid="columns"/>
+		FROM  sys_interface_classify c,sys_interface_url u,sys_subsystem s 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by u.id  desc
+		</if>
+	</select>
+	
+	
+	
+	<select id="getAllUrlByType" parameterType="java.lang.Long" resultMap="InterfaceUrlBean">
+		SELECT <include refid="columns"/> FROM  sys_interface_classify c,sys_interface_url u,sys_subsystem s 	WHERE 1=1 and u.subId = s.systemId and u.interfaceClassifyId = c.id and	u.type=#{type}
+	</select>
+	
+	<select id="getAllUrlByTypeAndClassify" parameterType="java.util.Map" resultMap="InterfaceUrlBean">
+		SELECT <include refid="columns"/> FROM  sys_interface_classify c,sys_interface_url u,sys_subsystem s 	WHERE 1=1 and u.subId = s.systemId and u.interfaceClassifyId = c.id and	u.type=#{type} and c.ename=#{ename}
+	</select>
+	
+	<select id="getAllUrlWithTypeAndClassify" parameterType="java.util.Map" resultMap="InterfaceUrlBean">
+		SELECT <include refid="columns"/> FROM  sys_interface_classify c,sys_interface_url u,sys_subsystem s 	WHERE 1=1 and u.subId = s.systemId and u.interfaceClassifyId = c.id and	u.type=#{type} and c.ename=#{ename} and s.systemId=#{systemId}
+	</select>
+	
+	
+	<select id="getAllUrlByTypeAndClassifyWithSys" parameterType="java.util.Map" resultMap="InterfaceUrlBean">
+		SELECT <include refid="columns"/> FROM  sys_interface_classify c,sys_interface_url u,sys_subsystem s 	WHERE 1=1 and u.subId = s.systemId and u.interfaceClassifyId = c.id and	u.type=#{type} and c.ename=#{ename} and s.systemId=#{currentSystem}
+	</select>
+	
+
+</mapper>

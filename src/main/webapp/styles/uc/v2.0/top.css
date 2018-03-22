@@ -1,0 +1,41 @@
+	.top {
+	    background: rgba(0, 0, 0, 0) url("../../../pages/images/header-bj.jpg") repeat scroll 0 0;
+	    height: 97px;
+	}
+	.block {
+	    height: 100%;
+	    margin: 0 auto;
+	    position: relative;
+	    width: 1230px;
+	}
+	.top .logo {
+    background: rgba(0, 0, 0, 0) url("../../../../pages/images/logo.png") no-repeat scroll center center;
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 215px;
+}
+a {
+    color: inherit;
+}
+
+.top .tit {
+    color: #474747;
+    font-size: 18px;
+    left: 290px;
+    position: absolute;
+    top: 35px;
+}
+
+
+.top .logo .decorate {
+    background: rgba(0, 0, 0, 0) url("../../../../pages/images/decorate.png") no-repeat scroll 0 0;
+    display: block;
+    height: 80px;
+    position: absolute;
+    right: -35px;
+    top: 0;
+    width: 9px;
+}

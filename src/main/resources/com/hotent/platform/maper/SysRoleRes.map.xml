@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.hotent.platform.model.system.SysRoleRes">
+	<resultMap id="SysRoleRes" type="com.hotent.platform.model.system.SysRoleRes">
+		<id property="roleresid" column="roleResId" jdbcType="NUMERIC"/>
+		<result property="roleid" column="roleId" jdbcType="NUMERIC"/>
+		<result property="resid" column="resId" jdbcType="NUMERIC"/>
+		<result property="systemid" column="systemId" jdbcType="NUMERIC"/>
+	</resultMap>
+
+	<sql id="columns">
+		roleResId,roleId,resId,systemId
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(roleresid)"> AND roleResId  =#{roleresid} </if>
+			<if test="@Ognl@isNotEmpty(roleid)"> AND roleId  =#{roleid} </if>
+			<if test="@Ognl@isNotEmpty(resid)"> AND resId  =#{resid} </if>
+			<if test="@Ognl@isNotEmpty(systemid)"> AND systemId  =#{systemid} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.hotent.platform.model.system.SysRoleRes">
+		INSERT INTO sys_role_res
+		(roleResId,roleId,resId,systemId)
+		VALUES
+		(#{roleresid,jdbcType=NUMERIC}, #{roleid,jdbcType=NUMERIC}, #{resid,jdbcType=NUMERIC}, #{systemid,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_role_res 
+		WHERE
+		roleResId=#{roleresid}
+	</delete>
+	
+	<update id="update" parameterType="com.hotent.platform.model.system.SysRoleRes">
+		UPDATE sys_role_res 
+		<set>
+		<if test="roleId !='' and roleId !=null ">roleId=#{roleid,jdbcType=NUMERIC},</if>
+		<if test="resId !='' and resId !=null ">resId=#{resid,jdbcType=NUMERIC},</if>
+		<if test="systemId !='' and systemId !=null ">systemId=#{systemid,jdbcType=NUMERIC}</if>
+		</set>
+		WHERE roleResId=#{roleresid}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysRoleRes">
+		SELECT <include refid="columns"/>
+		FROM sys_role_res
+		WHERE
+		roleResId=#{roleresid}
+	</select>
+	
+	<select id="getSysRoleResByRoleId" parameterType="Long" resultType="com.hotent.platform.model.system.SysRoleRes">
+		select * from sys_role_res t where t.roleId = #{roleId}
+	</select>
+	
+	
+	<select id="getAll" resultMap="SysRoleRes">
+		SELECT <include refid="columns"/>
+		FROM sys_role_res   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by roleResId  desc
+		</if>
+	</select>
+</mapper>

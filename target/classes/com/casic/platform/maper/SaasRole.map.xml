@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.platform.saas.role.SaasRole">
+	<resultMap id="SaasRole" type="com.casic.platform.saas.role.SaasRole">
+		<id property="saasRoleId" column="saas_role_id" jdbcType="NUMERIC"/>
+		<result property="roleId" column="role_id" jdbcType="NUMERIC"/>
+		<result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+		<result property="roleAlias" column="role_alias" jdbcType="VARCHAR"/>
+		<result property="roleType" column="role_type" jdbcType="VARCHAR"/>
+		<result property="memo" column="memo" jdbcType="VARCHAR"/>
+		<result property="tenantId" column="tenant_id" jdbcType="NUMERIC"/>
+		<result property="status" column="status" jdbcType="VARCHAR"/>
+		<association property="role" column="role_id" jdbcType="NUMERIC"
+					javaType="com.hotent.platform.model.system.SysRole" 
+					select="selectRole"/>   
+<!-- 		<association property="tenant" column="tenant_id" jdbcType="NUMERIC"  -->
+<!-- 					javaType="com.hotent.platform.model.system.SysOrgInfo" -->
+<!-- 					select="selectInfo"/> -->
+	</resultMap>
+
+	<select id="selectRole" parameterType="Long" resultType="com.hotent.platform.model.system.SysRole">  
+		 SELECT * FROM SYS_ROLE WHERE roleId = #{roleId}
+	</select>
+	
+	<select id="selectInfo" parameterType="Long" resultType="com.hotent.platform.model.system.SysOrgInfo">  
+		 SELECT * FROM SYS_ORG_INFO WHERE SYS_ORG_INFO_ID = #{tenantId}
+	</select>
+	
+	<sql id="columns">
+		saas_role_id,role_id,role_name,role_alias,role_type,memo,tenant_id,status
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(saasRoleId)"> AND saas_role_id  = #{saasRoleId} </if>
+			<if test="@Ognl@isNotEmpty(roleId)"> AND role_id  = #{roleId} </if>
+			<if test="@Ognl@isNotEmpty(roleName)"> AND role_name  like #{roleName} </if>
+			<if test="@Ognl@isNotEmpty(roleAlias)"> AND role_alias  like #{roleAlias} </if>
+			<if test="@Ognl@isNotEmpty(roleType)"> AND role_type  = #{roleType} </if>
+			<if test="@Ognl@isNotEmpty(memo)"> AND memo  like #{memo} </if>
+			<if test="@Ognl@isNotEmpty(tenantId)"> AND tenant_id  = #{tenantId}  </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status = #{status}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.platform.saas.role.SaasRole">
+		INSERT INTO cloud_saas_role
+		(saas_role_id,role_id,role_name,role_alias,role_type,memo,tenant_id,status)
+		VALUES
+		(#{saasRoleId,jdbcType=NUMERIC}, #{roleId,jdbcType=NUMERIC}, #{roleName,jdbcType=VARCHAR},#{roleAlias,jdbcType=VARCHAR},#{roleType,jdbcType=VARCHAR},#{memo,jdbcType=VARCHAR},#{tenantId,jdbcType=NUMERIC}, #{status,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_role
+		WHERE
+		saas_role_id=#{saasRoleId}
+	</delete>
+	
+	<delete id="delByTenantId" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_role
+		WHERE
+		tenant_id=#{tenantId}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.platform.saas.role.SaasRole">
+		UPDATE cloud_saas_role SET
+		<if test="@Ognl@isNotEmpty(tenantId)">
+		tenant_id=#{tenantId,jdbcType=NUMERIC},
+		</if>
+		<if test="@Ognl@isNotEmpty(roleId)">
+		role_id=#{roleId,jdbcType=NUMERIC},
+		</if>
+		<if test="@Ognl@isNotEmpty(roleType)">
+		role_type=#{roleType,jdbcType=VARCHAR},
+		</if>
+		memo=#{memo,jdbcType=VARCHAR},
+		<if test="@Ognl@isNotEmpty(status)">
+		status=#{status,jdbcType=VARCHAR},
+		</if>
+		role_name=#{roleName,jdbcType=VARCHAR},
+		role_alias=#{roleAlias,jdbcType=VARCHAR}
+		WHERE
+		saas_role_id=#{saasRoleId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SaasRole">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_role
+		WHERE
+		saas_role_id=#{saasRoleId}
+	</select>
+	
+	<select id="getAll" resultMap="SaasRole">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_role   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by saas_role_id desc
+		</if>
+	</select>
+	
+	<select id="testByForEach" resultMap="SaasRole">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_role   
+		where role_id in
+		<foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+			#{roleId,jdbcType=NUMERIC}
+		</foreach>
+	</select>
+	
+	<select id="getByUserIdAndTenantId" parameterType="java.util.Map" resultMap="SaasRole">
+		SELECT r.*
+		FROM CLOUD_SAAS_USER_ROLE urro,SYS_USER ur,cloud_saas_role r
+		WHERE  urro.userId=ur.userId and urro.roleId=r.saas_role_id
+		AND urro.userId=#{userId} and urro.tenantId=#{tenantId}
+	</select>
+	
+	<!-- 获取企业自定义角色或者平台公共角色合集 ，role_id相同的去重 -->
+	<select id="getByTenantIdAndPlatformPublicRole" resultMap="SaasRole">
+		select distinct a.* from(select t.role_id as saas_role_id,t.role_id,t.role_name,t.role_alias,t.role_type,t.memo,t.tenant_id,'saas'  as `STATUS` from cloud_saas_role t 
+			where t.tenant_id=#{tenantId}
+			union 
+			select t1.roleId as saas_role_id,t1.roleId as role_id,t1.rolename as role_name,t1.alias as role_alias,t1.roleType as role_type,t1.memo,#{tenantId} as tenant_id,'sys' as `STATUS` from sys_role t1 
+			where t1.isTenant = 0 and t1.memo != '内置角色'
+			order by saas_role_id desc
+		)a
+	</select>
+</mapper>

@@ -1,0 +1,21 @@
+/*header begin*/
+.clound_header_box{width:100%; height: 97px; background: url(images/clound_img2.png) center;}
+.clound_header{width:1230px; height:100%; margin:0 auto; overflow: hidden; zoom:1;}
+.htyw{width:220px; height:100%; background:url(images/clound_logo.png) no-repeat 4px 14px; text-indent: -9999px;float:left; display:inline;}
+.gzgyy{width:220px; height:100%; background:url(images/gzgyy-logo.png) no-repeat 4px 14px; text-indent: -9999px;float:left; display:inline;}
+.hbgyy{width:240px; height:100%; background:url(images/hbgyy-logo.png) no-repeat 4px 25px; text-indent: -9999px;float:left; display:inline;}
+.jxgyy{width:270px; height:100%; background:url(images/jxgyy-logo.png) no-repeat 4px 5px; text-indent: -9999px;float:left; display:inline;}
+.scjm{width:280px; height:100%; background:url(images/scjm-logo.png) no-repeat 4px 5px; text-indent: -9999px;float:left; display:inline;}
+.jyw{width:380px; height:100%; background:url(images/jy-logo.png) no-repeat 4px 14px; text-indent: -9999px;float:left; display:inline;}
+/*.jyw-logo{background: url(images/jy-logo.png) no-repeat center;width: 375px;height: 100%;display: block;position: absolute;top: 0;left: -70px;}*/
+.clound_header i{width:10px; height:80px; background:url(images/clound_img1.png) no-repeat; margin-left:26px; margin-right:34px;}
+.clound_header_safe{width:82px; height:100%; text-align: center; line-height: 97px; font-size: 18px; color: #474747;}
+/*footer begin*/
+.clound_footer{width:1230px; height:78px; margin:0 auto; color:#707070; text-align: center;}
+.clound_footer_abount{width:100%; height:14px; line-height: 14px; text-align: center;}
+.clound_footer_abount a{display: inline-block; height:14px; line-height: 14px;  padding: 0 10px; border-right: 2px solid #9b9b9b; color:#707070;}
+.clound_footer_abount .footer_link{border-right: 0;}
+.clound_footer_magz{margin:10px 0 8px 0;}
+.clound_footer_magz span{margin-right: 12px;}
+.clound_footer_web span{margin-right: 42px;}
+

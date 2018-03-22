@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hotent.platform.model.system.NewSysOrgInfo">
+	
+	<resultMap id="NewSysOrgInfo" type="com.hotent.platform.model.system.NewSysOrgInfo">
+		<id property="sysOrgInfoId" column="SYS_ORG_INFO_ID" jdbcType="NUMERIC" />
+		<result property="name" column="NAME" jdbcType="VARCHAR" />
+		<result property="createtime" column="CREATETIME" jdbcType="DATE" />
+		<result property="info" column="INFO" jdbcType="VARCHAR"/>
+         <result property="updatetime" column="updatetime" jdbcType="DATE"/>
+	</resultMap>
+	
+	
+	
+		
+	<select id="getAllSysOrgInfo" parameterType="Map" resultMap="NewSysOrgInfo">
+		<!-- select s.SYS_ORG_INFO_ID,s.`NAME`,s.INFO,s.CREATETIME,so.updatetime from sys_org_info s left join sys_org so on s.SYS_ORG_INFO_ID = so.orgId
+		ORDER BY s.CREATETIME DESC -->
+		select s.SYS_ORG_INFO_ID,s.`NAME`,s.INFO,s.CREATETIME,so.updatetime from sys_org_info s left join sys_org so on s.SYS_ORG_INFO_ID = so.orgId
+		 <if test="createtime !=null ">
+			ORDER BY s.CREATETIME DESC
+		 </if>
+		 <if test="updatetime !=null ">
+			ORDER BY so.updatetime DESC
+		 </if>
+		 limit #{cur},#{size}
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from sys_org_info s LEFT JOIN sys_org so on s.SYS_ORG_INFO_ID = so.orgId
+	</select>
+</mapper>

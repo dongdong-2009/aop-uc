@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.community.model.QuestionBean">
+	<resultMap id="QuestionBean" type="com.casic.community.model.QuestionBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="title" column="title" jdbcType="VARCHAR"/>
+		<result property="createById" column="createById" jdbcType="VARCHAR"/>
+		<result property="createByName" column="createByName" jdbcType="VARCHAR"/>
+		<result property="createTime" column="createTime" jdbcType="VARCHAR"/>
+		<result property="content" column="content" jdbcType="VARCHAR"/>
+		<result property="remark1" column="remark1" jdbcType="VARCHAR"/>
+		<result property="remark2" column="remark2" jdbcType="NUMERIC"/>
+		<result property="remark3" column="remark3" jdbcType="NUMERIC"/>
+		<result property="readCount" column="readCount" jdbcType="NUMERIC"/>
+		<result property="replyCount" column="replyCount" jdbcType="NUMERIC"/>
+		<result property="status" column="status" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="columns">
+		id,title,createById,createByName,createTime,content,remark1,remark2,remark3,status
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(title)"> AND title  LIKE #{title}  </if>
+		</where>
+			
+	</sql>
+
+	<insert id="add" parameterType="com.casic.community.model.QuestionBean">
+		INSERT INTO sys_community_question  
+		(id,title,createById,createByName,createTime,content,remark1,remark2,remark3,status)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{title,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},  #{content,jdbcType=VARCHAR},#{remark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, #{remark3,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_community_question 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<select id="getById" parameterType="java.lang.Long" resultMap="QuestionBean">
+		SELECT <include refid="columns"/> FROM  sys_community_question WHERE id=#{id}
+	</select>
+	
+	
+	<!-- <select id="getAllQuestionByPage" parameterType="java.util.Map" resultMap="QuestionBean">
+		SELECT <include refid="columns"/>
+		FROM  sys_community_question LIMIT #{cur},#{size}
+	</select> -->
+	
+	<select id="getAllCount" resultType="java.lang.Integer">
+		SELECT count(*) FROM  sys_community_question
+	</select>
+	
+	<select id="getSolvedCount" resultType="java.lang.Integer">
+		SELECT count(*) FROM  sys_community_question q where q.status=1 
+	</select>
+	
+	<select id="getUnsolvedCount" resultType="java.lang.Integer">
+		SELECT count(*) FROM  sys_community_question q where q.status=0 
+	</select>
+	
+	<select id="getMyCount" resultType="java.lang.Integer">
+		SELECT count(*) FROM  sys_community_question q where q.createById=#{currentUserId} 
+	</select>
+	
+	<select id="getAllQuestionByPage" parameterType="java.lang.String" resultMap="QuestionBean">
+		SELECT q.id,q.title,q.createById,q.createByName,q.createTime,q.content,q.remark1,q.remark2,q.remark3,q.status,v.readCount,v.replyCount
+		FROM  sys_community_question q LEFT JOIN sys_community_visitorcount v
+		on q.id=v.passageId LIMIT #{cur},#{size}
+	</select>
+	
+	<select id="getSolvedQuestionByPage" parameterType="java.lang.String" resultMap="QuestionBean">
+		SELECT q.id,q.title,q.createById,q.createByName,q.createTime,q.content,q.remark1,q.remark2,q.remark3,q.status,v.readCount,v.replyCount
+		FROM  sys_community_question q LEFT JOIN sys_community_visitorcount v
+		on q.id=v.passageId 
+		where q.status=#{status} LIMIT #{cur},#{size}
+	</select>
+	
+	<select id="getUnsolvedQuestionByPage" parameterType="java.lang.String" resultMap="QuestionBean">
+		SELECT q.id,q.title,q.createById,q.createByName,q.createTime,q.content,q.remark1,q.remark2,q.remark3,q.status,v.readCount,v.replyCount
+		FROM  sys_community_question q LEFT JOIN sys_community_visitorcount v
+		on q.id=v.passageId 
+		where q.status=#{status} LIMIT #{cur},#{size}
+	</select>
+	
+	<select id="getMyQuestionByPage" parameterType="java.lang.String" resultMap="QuestionBean">
+		SELECT q.id,q.title,q.createById,q.createByName,q.createTime,q.content,q.remark1,q.remark2,q.remark3,q.status,v.readCount,v.replyCount
+		FROM  sys_community_question q LEFT JOIN sys_community_visitorcount v
+		on q.id=v.passageId 
+		where q.createById=#{currentUserId} LIMIT #{cur},#{size}
+	</select>
+	
+	<update id="updateStatus" parameterType="java.lang.Long">
+		update sys_community_question set status=1
+		where id=#{questionId}
+	</update>
+
+</mapper>

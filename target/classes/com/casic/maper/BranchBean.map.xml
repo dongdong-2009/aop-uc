@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.tenant.model.BranchBean">
+	<resultMap id="BranchBean" type="com.casic.tenant.model.BranchBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="merchants" column="merchants" jdbcType="VARCHAR"/>
+		<result property="branchname" column="branchName" jdbcType="VARCHAR"/>
+		<result property="bankaccount" column="bankAccount" jdbcType="VARCHAR"/>
+		<result property="bankfullname" column="bankFullName" jdbcType="VARCHAR"/>
+		<result property="branchaccountname" column="branchAccountName" jdbcType="VARCHAR"/>
+		<result property="city" column="city" jdbcType="VARCHAR"/>
+		<result property="operatordesign" column="OperatorDesign" jdbcType="VARCHAR"/>
+		<result property="note" column="note" jdbcType="VARCHAR"/>
+		<result property="orgid" column="OrgId" jdbcType="NUMERIC"/>
+		<result property="province" column="province" jdbcType="VARCHAR"/>
+		<result property="branchAbbr" column="branchAbbr" jdbcType="VARCHAR"/>
+		<result property="fcflg" column="fcflg" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,merchants,branchName,bankAccount,bankFullName,branchAccountName,city,OperatorDesign,note,OrgId,province,branchAbbr,state,cityCode,clientProperty,credentialsType,credentialsNumber,businessFlag,accountType1,accstate,stlstate,fcflg
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(merchants)"> AND merchants  LIKE #{merchants}  </if>
+			<if test="@Ognl@isNotEmpty(branchname)"> AND branchName  LIKE #{branchname}  </if>
+			<if test="@Ognl@isNotEmpty(bankaccount)"> AND bankAccount  LIKE #{bankaccount}  </if>
+			<if test="@Ognl@isNotEmpty(bankfullname)"> AND bankFullName  LIKE #{bankfullname}  </if>
+			<if test="@Ognl@isNotEmpty(branchaccountname)"> AND branchAccountName  LIKE #{branchaccountname}  </if>
+			<if test="@Ognl@isNotEmpty(city)"> AND city  LIKE #{city}  </if>
+			<if test="@Ognl@isNotEmpty(operatordesign)"> AND OperatorDesign  LIKE #{operatordesign}  </if>
+			<if test="@Ognl@isNotEmpty(orgid)"> AND OrgId  =#{orgid} </if>
+			<if test="@Ognl@isNotEmpty(flag)"> AND flag  =#{flag} </if>
+			<if test="@Ognl@isNotEmpty(note)"> AND note  LIKE #{note}  </if>
+			<if test="@Ognl@isNotEmpty(branchAbbr)"> AND note  LIKE #{branchAbbr}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.tenant.model.BranchBean">
+		INSERT INTO branch
+		(id,merchants,branchName,bankAccount,bankFullName,branchAccountName,city,OperatorDesign,note,OrgId,province,branchAbbr,channelId,state,flag)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{merchants,jdbcType=VARCHAR}, #{branchname,jdbcType=VARCHAR}, #{bankaccount,jdbcType=VARCHAR}, #{bankfullname,jdbcType=VARCHAR}, #{branchaccountname,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+		 #{operatordesign,jdbcType=VARCHAR},
+		 #{note,jdbcType=VARCHAR},
+		 #{orgid,jdbcType=NUMERIC},
+		 #{province,jdbcType=VARCHAR},
+		  #{branchAbbr,jdbcType=VARCHAR},
+		  #{channelId,jdbcType=VARCHAR},
+		  #{state,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="addOpenCloseAccount" parameterType="com.casic.tenant.model.BranchBean">
+		INSERT INTO branch
+		(id,branchAccountName,OrgId,state,accstate,clientProperty,credentialsType,credentialsNumber,businessFlag,accountType1,flag,merchants)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{branchaccountname,jdbcType=VARCHAR},
+		 #{orgid,jdbcType=NUMERIC},
+		 #{state,jdbcType=NUMERIC},
+		 #{accstate,jdbcType=VARCHAR},
+		  #{clientProperty,jdbcType=VARCHAR},
+		  #{credentialsType,jdbcType=VARCHAR},
+		   #{credentialsNumber,jdbcType=VARCHAR},
+		  #{businessFlag,jdbcType=VARCHAR},
+		  #{accountType1,jdbcType=VARCHAR},
+		  #{flag,jdbcType=VARCHAR},
+		  #{merchants,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM branch 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.tenant.model.BranchBean">
+		UPDATE branch SET
+		merchants=#{merchants,jdbcType=VARCHAR},
+		branchName=#{branchname,jdbcType=VARCHAR},
+		bankAccount=#{bankaccount,jdbcType=VARCHAR},
+		bankFullName=#{bankfullname,jdbcType=VARCHAR},
+		branchAccountName=#{branchaccountname,jdbcType=VARCHAR},
+		city=#{city,jdbcType=VARCHAR},
+		OperatorDesign=#{operatordesign,jdbcType=VARCHAR},
+		OrgId=#{orgid,jdbcType=NUMERIC},
+		note=#{note,jdbcType=VARCHAR},
+		province = #{province,jdbcType=VARCHAR},
+		branchAbbr = #{branchAbbr,jdbcType=VARCHAR},
+		channelId = #{channelId,jdbcType=VARCHAR},
+		state = #{state,jdbcType=INTEGER}
+		WHERE
+		id=#{id}
+	</update>
+	
+	<update id="updateOpenCloseAccount" parameterType="com.casic.tenant.model.BranchBean">
+		UPDATE branch SET
+		branchAccountName=#{branchaccountname,jdbcType=VARCHAR},
+		OrgId=#{orgid,jdbcType=NUMERIC},
+		state = #{state,jdbcType=VARCHAR},
+		clientProperty=#{clientProperty,jdbcType=VARCHAR},
+		credentialsType=#{credentialsType,jdbcType=VARCHAR},
+		credentialsNumber=#{credentialsNumber,jdbcType=VARCHAR},
+		businessFlag=#{businessFlag,jdbcType=VARCHAR},		
+		accountType1=#{accountType1,jdbcType=VARCHAR},
+		accstate=#{accstate,jdbcType=VARCHAR},
+		merchants=#{merchants,jdbcType=VARCHAR}
+		WHERE
+		id=#{id} and flag=1
+	</update>
+	<update id="updateBranchAccount" parameterType="com.casic.tenant.model.BranchBean">
+		UPDATE branch SET
+		bankId=#{bankId,jdbcType=VARCHAR},
+		bankAccount=#{bankaccount,jdbcType=VARCHAR},
+		bankFullName=#{bankfullname,jdbcType=VARCHAR},
+		branchAccountName=#{branchaccountname,jdbcType=VARCHAR},
+		branchName=#{branchname,jdbcType=VARCHAR},
+		accountType=#{accountType,jdbcType=VARCHAR},
+		credentialsType=#{credentialsType,jdbcType=VARCHAR},
+		credentialsNumber=#{credentialsNumber,jdbcType=VARCHAR},
+		provCode=#{provCode,jdbcType=VARCHAR},
+		cityCode=#{cityCode,jdbcType=VARCHAR},
+		city=#{city,jdbcType=VARCHAR},
+		province = #{province,jdbcType=VARCHAR},
+		fcflg = #{fcflg,jdbcType=VARCHAR},
+		stlstate=#{stlstate,jdbcType=VARCHAR}
+		WHERE
+		id=#{id} and flag=1
+	</update>
+	<update id="updateStatus" parameterType="map">
+		UPDATE branch SET
+		stlstate=#{stlstate,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+	<update id="updateOpenCloseAccstate" parameterType="map">
+		UPDATE branch SET
+		 accstate=#{accstate,jdbcType=VARCHAR}
+		WHERE
+		id=#{id}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="BranchBean">
+		SELECT <include refid="columns"/>
+		FROM branch
+		WHERE
+		id=#{id}  and flag=1
+	</select>
+	
+	<select id="getByOrgid" parameterType="java.lang.Long" resultMap="BranchBean">
+		SELECT <include refid="columns"/>
+		FROM branch
+		WHERE
+		orgid=#{orgid} and flag=1
+	</select>
+	
+	<select id="getAll" resultMap="BranchBean">
+		SELECT <include refid="columns"/>
+		FROM branch   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	<select id="getAllOrgIds" resultType="com.casic.tenant.model.BranchBean">
+	   select distinct orgId from branch
+	</select>
+</mapper>

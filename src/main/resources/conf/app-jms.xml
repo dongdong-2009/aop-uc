@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+               <!-- 如果传输的对象是Obeject 这里必须加上这句   trustAllPackages="true"<property name="trustAllPackages" value="true"/>否则会导致对象序列化失败 出现classnotfound异常 -->
+           
+	<!--(嵌入配置)activeMq消息容器	-->
+   <!--  <amq:broker useJmx="false" persistent="false">
+        <amq:persistenceAdapter>
+            <amq:jdbcPersistenceAdapter id="jdbcAdapter" dataSource="#dataSource" createTablesOnStartup="false" useDatabaseLock="false"/>
+        </amq:persistenceAdapter>
+        <amq:transportConnectors>
+			<amq:transportConnector uri="tcp://localhost:51616" />
+		</amq:transportConnectors>
+    </amq:broker>
+   -->
+  	
+    <!-- (嵌入配置)jms连接工厂    -->
+    <amq:connectionFactory id="simpleJmsConnectionFactory" brokerURL="tcp://182.50.1.8:61616?wireFormat.maxInactivityDuration=0" userName="admin" password="admin" />
+    
+     <!--  Message 转换器  -->
+    <bean id="activeMqMessageConverter" class="com.hotent.core.jms.ActiveMqMessageConverter"/>
+    
+    <!--  Spring Jms模板 -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory">
+            <bean class="org.springframework.jms.connection.SingleConnectionFactory">
+                <!-- 采用普通jms连接工厂 -->
+                <property name="targetConnectionFactory" ref="simpleJmsConnectionFactory"/>
+            </bean>
+        </property>
+        <property name="messageConverter" ref="activeMqMessageConverter"/>
+    </bean>
+    
+    <!-- 消息对象队列  -->
+    <amq:queue id="messageQueue" name="messageQueue" physicalName="messageQueue" />
+
+	
+	<!-- 定义消息队列（Queue） -->
+    <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!-- 设置消息队列的名字 -->
+        <constructor-arg>
+            <value>10000050360000</value>
+        </constructor-arg>
+    </bean>
+
+    <!-- 配置消息队列监听者（Queue） -->
+   <!--  <bean id="consumerMessageListener" class="com.casic.listener.RoleMsgListenerxxx" /> -->
+
+    <!-- 消息监听容器（Queue），配置连接工厂，监听的队列是testSpringQueue，监听器是上面定义的监听器 -->
+    <!-- <bean id="jmsRoleContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="simpleJmsConnectionFactory" />
+        <property name="destination" ref="queueDestination" />
+        <property name="messageListener" ref="consumerMessageListener" />
+    </bean> -->
+	
+	
+    <!-- 消息对象队列  -->
+    <amq:topic id="messageTopic" name="messageTopic" physicalName="messageTopic" /> 
+    
+    <!-- 消息生产者   	-->
+    <bean id="messageProducer" class="com.hotent.core.jms.MessageProducer">
+    	<property name="useQueue" value="true"/> 
+    	<property name="useTopic" value="false"/> 
+    </bean>
+  
+    <!-- 
+    	消息消费者 
+    	map配置的是队列中消息处理类。
+    	键：队列中消息类 对应的类 全路径 如： com.hotent.core.model.MailModel
+    	值：消息处理类,需要实现接口类IJmsHandler 。如：com.hotent.platform.service.jms.impl.MailHandler 
+    	用户也可以配置自己的处理方式，配置到这里。
+     -->   
+    
+    <bean name="messageConsumer" class="com.hotent.core.jms.MessageConsumer">
+		<property name="handlers">
+			<map>
+			
+				<!-- <entry  key="com.hotent.core.model.MailModel">
+					<bean class="com.hotent.platform.service.jms.impl.MailHandler"></bean>
+				</entry>
+				<entry  key="com.hotent.core.model.SmsMobile">
+					<bean class="com.hotent.platform.service.jms.impl.SmsHandler"></bean>
+				</entry>
+				
+				<entry  key="com.hotent.core.model.SmsMobile">
+					<bean class="com.casic.cloud.pub.jms.CloudSmsHandler"></bean>
+				</entry>
+				<entry  key="com.hotent.core.model.InnerMessage">
+					<bean class="com.hotent.platform.service.jms.impl.InnerHandler"></bean>
+				</entry>  -->
+			</map>
+		</property> 
+    </bean>
+   
+   	
+    <!--消息监听容器 --> 
+	<bean id="messageListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="simpleJmsConnectionFactory" />
+		<property name="destination" ref="messageQueue" />
+	 <property name="messageListener" ref="messageMsgListener" />  
+	</bean>
+	
+	
+        
+   
+    
+    <!-- 邮件消息消费监听器  --> 
+	<bean id="messageMsgListener" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<constructor-arg>
+			<ref bean="messageConsumer"/>		
+		</constructor-arg>
+		<property name="messageConverter" ref="activeMqMessageConverter" />
+		<property name="defaultListenerMethod" value="sendMessage" />
+	</bean>
+
+</beans>	

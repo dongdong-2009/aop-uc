@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.tenant.model.TenantInfo">
+	
+	<resultMap id="Info" type="com.casic.tenant.model.TenantInfo">
+		<id property="sysOrgInfoId" column="SYS_ORG_INFO_ID" jdbcType="NUMERIC"/>
+		<result property="email" column="EMAIL" jdbcType="VARCHAR"/>
+		<result property="name" column="NAME" jdbcType="VARCHAR"/>
+		<result property="industry" column="INDUSTRY" jdbcType="VARCHAR"/>
+		<result property="scale" column="SCALE" jdbcType="VARCHAR"/>
+		<result property="address" column="ADDRESS" jdbcType="VARCHAR"/>
+		<result property="postcode" column="POSTCODE" jdbcType="VARCHAR"/>
+		<result property="connecter" column="CONNECTER" jdbcType="VARCHAR"/>
+		<result property="tel" column="TEL" jdbcType="VARCHAR"/>
+		<result property="fax" column="FAX" jdbcType="VARCHAR"/>
+		<result property="homephone" column="HOMEPHONE" jdbcType="VARCHAR"/>
+		<result property="logo" column="LOGO" jdbcType="VARCHAR"/>
+		<result property="industry2" column="INDUSTRY2" jdbcType="VARCHAR"/>
+		<result property="info" column="INFO" jdbcType="VARCHAR"/>
+		<result property="country" column="COUNTRY" jdbcType="VARCHAR"/>
+		<result property="province" column="PROVINCE" jdbcType="VARCHAR"/>
+		<result property="city" column="CITY" jdbcType="VARCHAR"/>
+		<result property="code" column="CODE" jdbcType="VARCHAR"/>
+		<result property="type" column="TYPE" jdbcType="VARCHAR"/>
+		<result property="model" column="MODEL" jdbcType="VARCHAR"/>
+		<result property="product" column="PRODUCT" jdbcType="VARCHAR"/>
+		<result property="website" column="WEBSITE" jdbcType="VARCHAR"/>
+		<result property="isPublic" column="IS_PUBLIC" jdbcType="VARCHAR"/>
+		<result property="registertime" column="REGISTERTIME" jdbcType="TIMESTAMP"/>
+		<result property="createtime" column="CREATETIME" jdbcType="TIMESTAMP"/>
+		<result property="flaglogo" column="FLAGLOGO" jdbcType="VARCHAR"/>
+		<result property="state" column="STATE" jdbcType="NUMERIC"/>
+		<result property="manageRange" column="MANAGE_RANGE" jdbcType="VARCHAR"/>
+		<result property="regProve" column="REG_PROVE" jdbcType="VARCHAR"/>
+		<result property="sellArea" column="SELL_AREA" jdbcType="VARCHAR"/>
+		<result property="brand" column="BRAND" jdbcType="VARCHAR"/>
+		<result property="employees" column="EMPLOYEES" jdbcType="NUMERIC"/>
+		<result property="area" column="AREA" jdbcType="NUMERIC"/>
+		<result property="clients" column="CLIENTS" jdbcType="VARCHAR"/>
+		<result property="turnover" column="TURNOVER" jdbcType="VARCHAR"/>
+		<result property="exportFore" column="EXPORT_FORE" jdbcType="VARCHAR"/>
+		<result property="importFore" column="IMPORT_FORE" jdbcType="VARCHAR"/>
+		<result property="qualityControl" column="QUALITY_CONTROL" jdbcType="VARCHAR"/>
+		<result property="regCapital" column="REG_CAPITAL" jdbcType="VARCHAR"/>
+		<result property="regAdd" column="REG_ADD" jdbcType="VARCHAR"/>
+		<result property="incorporator" column="INCORPORATOR" jdbcType="VARCHAR"/>
+		<result property="openBank" column="OPEN_BANK" jdbcType="VARCHAR"/>
+		<result property="openAccount" column="OPEN_ACCOUNT" jdbcType="VARCHAR"/>
+		<result property="showimage" column="SHOWIMAGE" jdbcType="VARCHAR"/>
+		<result property="sellArea2" column="SELL_AREA2" jdbcType="VARCHAR"/>
+		<result property="setid" column="setid" jdbcType="NUMERIC"/>
+		<result property="recommendedEnt" column="recommendedEnt" jdbcType="VARCHAR"/>
+		<result property="QRcode" column="QRcode" jdbcType="VARCHAR"/>
+		<result property="orgType" column="orgType" jdbcType="VARCHAR"/>
+		<result property="typeId" column="typeId" jdbcType="NUMERIC"/>
+		<result property="typeName" column="typeName" jdbcType="VARCHAR"/>
+		<result property="manageType" column="manageType" jdbcType="VARCHAR"/>
+		
+		<result property="gszch" column="gszch" jdbcType="VARCHAR"/>
+		<result property="nsrsbh" column="nsrsbh" jdbcType="VARCHAR"/>
+		<result property="frsfzhm" column="frsfzhm" jdbcType="VARCHAR"/>
+		<result property="frsjh" column="frsjh" jdbcType="VARCHAR"/>
+		
+		<result property="yyzzPic" column="yyzzPic" jdbcType="VARCHAR"/>
+		<result property="frPic" column="frPic" jdbcType="VARCHAR"/>
+		<result property="axnStatus" column="axnStatus" jdbcType="NUMERIC"/>
+		<result property="ylStatus" column="ylStatus" jdbcType="NUMERIC"/>
+		<result property="openId" column="openId" jdbcType="VARCHAR"/>
+		<result property="invititedCode" column="invititedCode" jdbcType="VARCHAR"/>
+		<result property="total" column="total" jdbcType="NUMERIC"/>
+		<result property="systemId" column="fromSysId" jdbcType="VARCHAR"/>
+		<result property="buluTime" column="buluTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="columns">
+		SYS_ORG_INFO_ID,EMAIL,NAME,INDUSTRY,SCALE,ADDRESS,POSTCODE,CONNECTER,TEL,FAX,HOMEPHONE,LOGO,INDUSTRY2,INFO,
+		COUNTRY,PROVINCE,CITY,CODE,TYPE,MODEL,PRODUCT,WEBSITE,IS_PUBLIC,REGISTERTIME,CREATETIME,FLAGLOGO,
+		STATE,MANAGE_RANGE,REG_PROVE,SELL_AREA,BRAND,EMPLOYEES,AREA,CLIENTS,TURNOVER,EXPORT_FORE,IMPORT_FORE,
+		QUALITY_CONTROL,REG_CAPITAL,REG_ADD,INCORPORATOR,OPEN_BANK,OPEN_ACCOUNT,SHOWIMAGE,SELL_AREA2,
+		setid,recommendedEnt,QRcode,orgType,typeId,typeName,manageType,gszch,nsrsbh,frsfzhm,frsjh,yyzzPic,
+		axnStatus,ylStatus,frPic,openId,COUNTY,COUNTY1,PROVINCE1,CITY1,codePic,abbreviationName,nsrsbhPic,yyzz
+		,creditCode,currencyFunds,accountTime,accountStatsus,fromSysId,invititedCode,address1,isThreeInOne,buluTime
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(gszch)"> AND gszch  =#{gszch} </if>
+			<if test="@Ognl@isNotEmpty(nsrsbh)"> AND nsrsbh  =#{nsrsbh} </if>
+			<if test="@Ognl@isNotEmpty(frsfzhm)"> AND frsfzhm  =#{frsfzhm} </if>
+			<if test="@Ognl@isNotEmpty(frsjh)"> AND frsjh  =#{frsjh} </if>
+			<if test="@Ognl@isNotEmpty(sysOrgInfoId)"> AND SYS_ORG_INFO_ID  LIKE #{sysOrgInfoId} </if>
+			<if test="@Ognl@isNotEmpty(email)"> AND EMAIL  LIKE #{email}  </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(industry)"> AND INDUSTRY  LIKE #{industry}  </if>
+			<if test="@Ognl@isNotEmpty(scale)"> AfND SCALE  LIKE #{scale}  </if>
+			<if test="@Ognl@isNotEmpty(address)"> AND ADDRESS  LIKE #{address}  </if>
+			<if test="@Ognl@isNotEmpty(postcode)"> AND POSTCODE  LIKE #{postcode}  </if>
+			<if test="@Ognl@isNotEmpty(connecter)"> AND CONNECTER  LIKE #{connecter}  </if>
+			<if test="@Ognl@isNotEmpty(tel)"> AND TEL  LIKE #{tel}  </if>
+			<if test="@Ognl@isNotEmpty(fax)"> AND FAX  LIKE #{fax}  </if>
+			<if test="@Ognl@isNotEmpty(homephone)"> AND HOMEPHONE  LIKE #{homephone}  </if>
+			<if test="@Ognl@isNotEmpty(logo)"> AND LOGO  LIKE #{logo}  </if>
+			<if test="@Ognl@isNotEmpty(industry2)"> AND INDUSTRY2  LIKE #{industry2}  </if>
+			<if test="@Ognl@isNotEmpty(info)"> AND INFO  LIKE #{info}  </if>
+			<if test="@Ognl@isNotEmpty(country)"> AND COUNTRY  LIKE #{country}  </if>
+			<if test="@Ognl@isNotEmpty(province)"> AND PROVINCE  LIKE #{province}  </if>
+			<if test="@Ognl@isNotEmpty(city)"> AND CITY  LIKE #{city}  </if>
+			<if test="@Ognl@isNotEmpty(code)"> AND CODE  LIKE #{code}  </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND TYPE  LIKE #{type}  </if>
+			<if test="@Ognl@isNotEmpty(model)"> AND MODEL  LIKE #{model}  </if>
+			<if test="@Ognl@isNotEmpty(product)"> AND PRODUCT  LIKE #{product}  </if>
+			<if test="@Ognl@isNotEmpty(website)"> AND WEBSITE  LIKE #{website}  </if>
+			<if test="@Ognl@isNotEmpty(isPublic)"> AND IS_PUBLIC  LIKE #{isPublic}  </if>
+			<if test="@Ognl@isNotEmpty(registertime)"> AND REGISTERTIME  =#{registertime} </if>
+			<if test="@Ognl@isNotEmpty(createtime)"> AND CREATETIME  =#{createtime} </if>
+			<if test="@Ognl@isNotEmpty(beginregistertime)"> AND REGISTERTIME  >=#{beginregistertime,jdbcType=TIMESTAMP} </if>
+			<if test="@Ognl@isNotEmpty(endregistertime)"> AND REGISTERTIME <![CDATA[ <=#{endregistertime,jdbcType=TIMESTAMP}]]> </if>
+			<if test="@Ognl@isNotEmpty(begincreatetime)">AND CREATETIME <![CDATA[>=#{begincreatetime,jdbcType=TIMESTAMP}]]></if>
+			<if test="@Ognl@isNotEmpty(endcreatetime)">AND CREATETIME <![CDATA[<=#{endcreatetime,jdbcType=TIMESTAMP}]]></if>
+			<if test="@Ognl@isNotEmpty(flaglogo)"> AND FLAGLOGO  LIKE #{flaglogo}  </if>
+			<if test="@Ognl@isNotEmpty(state)"> AND STATE  =#{state} </if>
+			<if test="@Ognl@isNotEmpty(manageRange)"> AND MANAGE_RANGE  LIKE #{manageRange}  </if>
+			<if test="@Ognl@isNotEmpty(regProve)"> AND REG_PROVE  LIKE #{regProve}  </if>
+			<if test="@Ognl@isNotEmpty(sellArea)"> AND SELL_AREA  LIKE #{sellArea}  </if>
+			<if test="@Ognl@isNotEmpty(brand)"> AND BRAND  LIKE #{brand}  </if>
+			<if test="@Ognl@isNotEmpty(employees)"> AND EMPLOYEES  =#{employees} </if>
+			<if test="@Ognl@isNotEmpty(area)"> AND AREA  =#{area} </if>
+			<if test="@Ognl@isNotEmpty(clients)"> AND CLIENTS  LIKE #{clients}  </if>
+			<if test="@Ognl@isNotEmpty(turnover)"> AND TURNOVER  LIKE #{turnover}  </if>
+			<if test="@Ognl@isNotEmpty(exportFore)"> AND EXPORT_FORE  LIKE #{exportFore}  </if>
+			<if test="@Ognl@isNotEmpty(importFore)"> AND IMPORT_FORE  LIKE #{importFore}  </if>
+			<if test="@Ognl@isNotEmpty(qualityControl)"> AND QUALITY_CONTROL  LIKE #{qualityControl}  </if>
+			<if test="@Ognl@isNotEmpty(regCapital)"> AND REG_CAPITAL  LIKE #{regCapital}  </if>
+			<if test="@Ognl@isNotEmpty(regAdd)"> AND REG_ADD  LIKE #{regAdd}  </if>
+			<if test="@Ognl@isNotEmpty(incorporator)"> AND INCORPORATOR  LIKE #{incorporator}  </if>
+			<if test="@Ognl@isNotEmpty(openBank)"> AND OPEN_BANK  LIKE #{openBank}  </if>
+			<if test="@Ognl@isNotEmpty(openAccount)"> AND OPEN_ACCOUNT  LIKE #{openAccount}  </if>
+			<if test="@Ognl@isNotEmpty(showimage)"> AND SHOWIMAGE  LIKE #{showimage}  </if>
+			<if test="@Ognl@isNotEmpty(recommendedEnt)"> AND RECOMMENDEDENT  LIKE #{recommendedEnt}  </if>
+			<if test="@Ognl@isNotEmpty(QRcode)"> AND QRcode  LIKE #{QRcode}  </if>
+			<if test="@Ognl@isNotEmpty(orgType)"> AND orgType  LIKE #{orgType}  </if>
+			<if test="@Ognl@isNotEmpty(openId)"> AND openId  LIKE #{openId}  </if>
+			<if test="@Ognl@isNotEmpty(typeId)"> AND typeId  = #{typeId}  </if>
+			<if test="@Ognl@isNotEmpty(typeName)"> AND typeName  LIKE #{typeName}  </if>
+			<if test="@Ognl@isNotEmpty(manageType)"> AND manageType  LIKE #{manageType}  </if>
+			<if test="@Ognl@isNotEmpty(notstate)">  AND state != 2  </if>
+			<if test="@Ognl@isNotEmpty(invititedCode)">  AND invititedCode LIKE #{invititedCode} </if>
+			<if test="@Ognl@isNotEmpty(systemId)">  AND fromSysId LIKE #{systemId} </if>
+			<!-- 下面是为了二级运营管理员而做 -->
+			<if test="@Ognl@isNotEmpty(fromSysId)">  AND fromSysId = #{fromSysId} </if>			
+			<if test="@Ognl@isNotEmpty(notStatus)">  AND state != #{notStatus}  </if>
+			
+			<if test="@Ognl@isNotEmpty(select)">  AND (name like  concat('%',#{select},'%') or product like  concat('%',#{select},'%')
+			  or industry like  concat('%',#{select},'%') or industry2 like  concat('%',#{select},'%') ) </if>
+			<if test="@Ognl@isNotEmpty(keyword)">  AND (name like  concat('%',#{keyword},'%') or product like  concat('%',#{keyword},'%')
+			  or industry like  concat('%',#{keyword},'%') or industry2 like  concat('%',#{keyword},'%') ) </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.tenant.model.TenantInfo">
+		INSERT INTO sys_org_info
+		(SYS_ORG_INFO_ID,EMAIL,NAME,INDUSTRY,SCALE,ADDRESS,POSTCODE,CONNECTER,TEL,FAX,HOMEPHONE,LOGO,INDUSTRY2,INFO,COUNTRY,PROVINCE,CITY,CODE,
+		TYPE,MODEL,PRODUCT,WEBSITE,IS_PUBLIC,REGISTERTIME,CREATETIME,FLAGLOGO,STATE,MANAGE_RANGE,REG_PROVE,SELL_AREA,BRAND,EMPLOYEES,AREA,CLIENTS,
+		TURNOVER,EXPORT_FORE,IMPORT_FORE,QUALITY_CONTROL,REG_CAPITAL,REG_ADD,INCORPORATOR,OPEN_BANK,OPEN_ACCOUNT,SHOWIMAGE,SELL_AREA2,setid,recommendedEnt,
+		QRcode,orgType, typeId, typeName, manageType,gszch,nsrsbh,frsfzhm,frsjh,yyzzPic,axnStatus,ylStatus,frPic)
+		VALUES
+		(#{sysOrgInfoId,jdbcType=NUMERIC}, #{email,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{industry,jdbcType=VARCHAR},
+	   #{scale,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{connecter,jdbcType=VARCHAR},
+	   #{tel,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, #{homephone,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR},
+	   #{industry2,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+	   #{city,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, 
+	   #{website,jdbcType=VARCHAR}, #{isPublic,jdbcType=VARCHAR}, #{registertime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP},
+	   #{flaglogo,jdbcType=VARCHAR}, #{state,jdbcType=NUMERIC}, #{manageRange,jdbcType=VARCHAR}, #{regProve,jdbcType=VARCHAR}, #{sellArea,jdbcType=VARCHAR},
+	   #{brand,jdbcType=VARCHAR}, #{employees,jdbcType=NUMERIC}, #{area,jdbcType=NUMERIC}, #{clients,jdbcType=VARCHAR}, #{turnover,jdbcType=VARCHAR},
+	   #{exportFore,jdbcType=VARCHAR}, #{importFore,jdbcType=VARCHAR}, #{qualityControl,jdbcType=VARCHAR}, #{regCapital,jdbcType=VARCHAR},
+	   #{regAdd,jdbcType=VARCHAR}, #{incorporator,jdbcType=VARCHAR}, #{openBank,jdbcType=VARCHAR}, #{openAccount,jdbcType=VARCHAR},
+	   #{showimage,jdbcType=VARCHAR}, #{sellArea2,jdbcType=VARCHAR}, #{setid,jdbcType=VARCHAR}, #{recommendedEnt,jdbcType=VARCHAR},#{QRcode,jdbcType=VARCHAR},
+	   #{orgType,jdbcType=VARCHAR},#{typeId,jdbcType=NUMERIC},#{typeName,jdbcType=VARCHAR}, #{manageType,jdbcType=VARCHAR},
+	   #{gszch,jdbcType=VARCHAR},#{nsrsbh,jdbcType=VARCHAR}, #{frsfzhm,jdbcType=VARCHAR},#{frsjh,jdbcType=VARCHAR},
+	   #{yyzzPic,jdbcType=VARCHAR}, #{axnStatus,jdbcType=NUMERIC},#{ylStatus,jdbcType=NUMERIC},#{frPic,jdbcType=VARCHAR},#{openId,jdbcType=VARCHAR}
+	   )
+	</insert>
+	
+	<insert id="addCopy" parameterType="com.casic.tenant.model.TenantInfo">
+		INSERT INTO sys_org_info_copy
+		(SYS_ORG_INFO_ID,EMAIL,NAME,INDUSTRY,SCALE,ADDRESS,POSTCODE,CONNECTER,TEL,FAX,HOMEPHONE,LOGO,INDUSTRY2,INFO,COUNTRY,
+		PROVINCE,CITY,CODE,TYPE,MODEL,PRODUCT,WEBSITE,IS_PUBLIC,REGISTERTIME,CREATETIME,FLAGLOGO,STATE,MANAGE_RANGE,REG_PROVE,
+		SELL_AREA,BRAND,EMPLOYEES,AREA,CLIENTS,TURNOVER,EXPORT_FORE,IMPORT_FORE,QUALITY_CONTROL,REG_CAPITAL,REG_ADD,INCORPORATOR,
+		OPEN_BANK,OPEN_ACCOUNT,SHOWIMAGE,SELL_AREA2,setid,recommendedEnt,QRcode,orgType, typeId, typeName, manageType,gszch,nsrsbh,
+		frsfzhm,frsjh,yyzzPic,axnStatus,ylStatus,frPic)
+		VALUES
+		(#{sysOrgInfoId,jdbcType=NUMERIC}, #{email,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{industry,jdbcType=VARCHAR},
+	   #{scale,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{connecter,jdbcType=VARCHAR},
+	   #{tel,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, #{homephone,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR},
+	   #{industry2,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+	   #{city,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{product,jdbcType=VARCHAR}, 
+	   #{website,jdbcType=VARCHAR}, #{isPublic,jdbcType=VARCHAR}, #{registertime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP},
+	   #{flaglogo,jdbcType=VARCHAR}, #{state,jdbcType=NUMERIC}, #{manageRange,jdbcType=VARCHAR}, #{regProve,jdbcType=VARCHAR}, #{sellArea,jdbcType=VARCHAR},
+	   #{brand,jdbcType=VARCHAR}, #{employees,jdbcType=NUMERIC}, #{area,jdbcType=NUMERIC}, #{clients,jdbcType=VARCHAR}, #{turnover,jdbcType=VARCHAR},
+	   #{exportFore,jdbcType=VARCHAR}, #{importFore,jdbcType=VARCHAR}, #{qualityControl,jdbcType=VARCHAR}, #{regCapital,jdbcType=VARCHAR},
+	   #{regAdd,jdbcType=VARCHAR}, #{incorporator,jdbcType=VARCHAR}, #{openBank,jdbcType=VARCHAR}, #{openAccount,jdbcType=VARCHAR},
+	   #{showimage,jdbcType=VARCHAR}, #{sellArea2,jdbcType=VARCHAR}, #{setid,jdbcType=VARCHAR}, #{recommendedEnt,jdbcType=VARCHAR},#{QRcode,jdbcType=VARCHAR},
+	   #{orgType,jdbcType=VARCHAR},#{typeId,jdbcType=NUMERIC},#{typeName,jdbcType=VARCHAR}, #{manageType,jdbcType=VARCHAR},
+	   #{gszch,jdbcType=VARCHAR},#{nsrsbh,jdbcType=VARCHAR}, #{frsfzhm,jdbcType=VARCHAR},#{frsjh,jdbcType=VARCHAR},
+	   #{yyzzPic,jdbcType=VARCHAR}, #{axnStatus,jdbcType=NUMERIC},#{ylStatus,jdbcType=NUMERIC},#{frPic,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_org_info 
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.tenant.model.TenantInfo">
+		UPDATE sys_org_info SET
+		EMAIL=#{email,jdbcType=VARCHAR},
+		NAME=#{name,jdbcType=VARCHAR},
+		INDUSTRY=#{industry,jdbcType=VARCHAR},
+		SCALE=#{scale,jdbcType=VARCHAR},
+		ADDRESS=#{address,jdbcType=VARCHAR},
+		POSTCODE=#{postcode,jdbcType=VARCHAR},
+		CONNECTER=#{connecter,jdbcType=VARCHAR},
+		TEL=#{tel,jdbcType=VARCHAR},
+		FAX=#{fax,jdbcType=VARCHAR},
+		HOMEPHONE=#{homephone,jdbcType=VARCHAR},
+		INDUSTRY2=#{industry2,jdbcType=VARCHAR},
+		INFO=#{info,jdbcType=VARCHAR},
+		COUNTRY=#{country,jdbcType=VARCHAR},
+		PROVINCE=#{province,jdbcType=VARCHAR},
+		CITY=#{city,jdbcType=VARCHAR},
+		COUNTY=#{county,jdbcType=VARCHAR},
+		PROVINCE1=#{province1,jdbcType=VARCHAR},
+		CITY1=#{city1,jdbcType=VARCHAR},
+		COUNTY1=#{county1,jdbcType=VARCHAR},
+		CODE=#{code,jdbcType=VARCHAR},
+		TYPE=#{type,jdbcType=VARCHAR},
+		MODEL=#{model,jdbcType=VARCHAR},
+		PRODUCT=#{product,jdbcType=VARCHAR},
+		WEBSITE=#{website,jdbcType=VARCHAR},
+		IS_PUBLIC=#{isPublic,jdbcType=VARCHAR},
+		FLAGLOGO=#{flaglogo,jdbcType=VARCHAR},
+		STATE=#{state,jdbcType=NUMERIC},
+		MANAGE_RANGE=#{manageRange,jdbcType=VARCHAR},
+		REG_PROVE=#{regProve,jdbcType=VARCHAR},
+		SELL_AREA=#{sellArea,jdbcType=VARCHAR},
+		BRAND=#{brand,jdbcType=VARCHAR},
+		EMPLOYEES=#{employees,jdbcType=NUMERIC},
+		AREA=#{area,jdbcType=NUMERIC},
+		CLIENTS=#{clients,jdbcType=VARCHAR},
+		TURNOVER=#{turnover,jdbcType=VARCHAR},
+		EXPORT_FORE=#{exportFore,jdbcType=VARCHAR},
+		IMPORT_FORE=#{importFore,jdbcType=VARCHAR},
+		QUALITY_CONTROL=#{qualityControl,jdbcType=VARCHAR},
+		REG_CAPITAL=#{regCapital,jdbcType=VARCHAR},
+		REG_ADD=#{regAdd,jdbcType=VARCHAR},
+		INCORPORATOR=#{incorporator,jdbcType=VARCHAR},
+		OPEN_BANK=#{openBank,jdbcType=VARCHAR},
+		OPEN_ACCOUNT=#{openAccount,jdbcType=VARCHAR},
+		SELL_AREA2=#{sellArea2,jdbcType=VARCHAR},
+		recommendedEnt=#{recommendedEnt,jdbcType=VARCHAR},
+		setid=#{setid,jdbcType=NUMERIC},
+		QRcode=#{QRcode,jdbcType=VARCHAR},
+		orgType=#{orgType,jdbcType=VARCHAR},
+		typeId=#{typeId,jdbcType=NUMERIC},
+		typeName=#{typeName,jdbcType=VARCHAR},
+		manageType=#{manageType,jdbcType=VARCHAR}, 
+		gszch = #{gszch,jdbcType=VARCHAR},
+		nsrsbh = #{nsrsbh,jdbcType=VARCHAR}, 
+		frsfzhm = #{frsfzhm,jdbcType=VARCHAR},
+		frsjh = #{frsjh,jdbcType=VARCHAR},
+	    yyzzPic = #{yyzzPic,jdbcType=VARCHAR}, 
+	    axnStatus = #{axnStatus,jdbcType=NUMERIC},
+	    ylStatus = #{ylStatus,jdbcType=NUMERIC},
+	    showimage=#{showimage,jdbcType=VARCHAR},
+	    frPic = #{frPic,jdbcType=VARCHAR},
+	    abbreviationName=#{abbreviationName,jdbcType=VARCHAR},
+	    codePic=#{codePic,jdbcType=VARCHAR},
+	    nsrsbhPic=#{nsrsbhPic,jdbcType=VARCHAR},
+	    yyzz=#{yyzz,jdbcType=VARCHAR},
+	    creditCode=#{creditCode,jdbcType=VARCHAR},
+	    currencyFunds=#{currencyFunds,jdbcType=VARCHAR},
+	    accountStatsus=#{accountStatsus,jdbcType=VARCHAR},
+	    accountTime=#{accountTime,jdbcType=TIMESTAMP},
+	    invititedCode=#{invititedCode,jdbcType=VARCHAR}
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId,jdbcType=TIMESTAMP}
+	</update>
+	
+	<update id="updateDraft" parameterType="com.casic.tenant.model.TenantInfo">
+		UPDATE sys_org_info SET
+		EMAIL=#{email,jdbcType=VARCHAR},
+		NAME=#{name,jdbcType=VARCHAR},
+		INDUSTRY=#{industry,jdbcType=VARCHAR},
+		SCALE=#{scale,jdbcType=VARCHAR},
+		ADDRESS=#{address,jdbcType=VARCHAR},
+		POSTCODE=#{postcode,jdbcType=VARCHAR},
+		CONNECTER=#{connecter,jdbcType=VARCHAR},
+		TEL=#{tel,jdbcType=VARCHAR},
+		FAX=#{fax,jdbcType=VARCHAR},
+		HOMEPHONE=#{homephone,jdbcType=VARCHAR},
+		INDUSTRY2=#{industry2,jdbcType=VARCHAR},
+		INFO=#{info,jdbcType=VARCHAR},
+		COUNTRY=#{country,jdbcType=VARCHAR},
+		PROVINCE=#{province,jdbcType=VARCHAR},
+		CITY=#{city,jdbcType=VARCHAR},
+		COUNTY=#{county,jdbcType=VARCHAR},
+		PROVINCE1=#{province1,jdbcType=VARCHAR},
+		CITY1=#{city1,jdbcType=VARCHAR},
+		COUNTY1=#{county1,jdbcType=VARCHAR},
+		CODE=#{code,jdbcType=VARCHAR},
+		TYPE=#{type,jdbcType=VARCHAR},
+		MODEL=#{model,jdbcType=VARCHAR},
+		PRODUCT=#{product,jdbcType=VARCHAR},
+		WEBSITE=#{website,jdbcType=VARCHAR},
+		IS_PUBLIC=#{isPublic,jdbcType=VARCHAR},
+		FLAGLOGO=#{flaglogo,jdbcType=VARCHAR},
+		MANAGE_RANGE=#{manageRange,jdbcType=VARCHAR},
+		REG_PROVE=#{regProve,jdbcType=VARCHAR},
+		SELL_AREA=#{sellArea,jdbcType=VARCHAR},
+		BRAND=#{brand,jdbcType=VARCHAR},
+		EMPLOYEES=#{employees,jdbcType=NUMERIC},
+		AREA=#{area,jdbcType=NUMERIC},
+		CLIENTS=#{clients,jdbcType=VARCHAR},
+		TURNOVER=#{turnover,jdbcType=VARCHAR},
+		EXPORT_FORE=#{exportFore,jdbcType=VARCHAR},
+		IMPORT_FORE=#{importFore,jdbcType=VARCHAR},
+		QUALITY_CONTROL=#{qualityControl,jdbcType=VARCHAR},
+		REG_CAPITAL=#{regCapital,jdbcType=VARCHAR},
+		REG_ADD=#{regAdd,jdbcType=VARCHAR},
+		INCORPORATOR=#{incorporator,jdbcType=VARCHAR},
+		OPEN_BANK=#{openBank,jdbcType=VARCHAR},
+		OPEN_ACCOUNT=#{openAccount,jdbcType=VARCHAR},
+		SELL_AREA2=#{sellArea2,jdbcType=VARCHAR},
+		recommendedEnt=#{recommendedEnt,jdbcType=VARCHAR},
+		setid=#{setid,jdbcType=NUMERIC},
+		QRcode=#{QRcode,jdbcType=VARCHAR},
+		orgType=#{orgType,jdbcType=VARCHAR},
+		typeId=#{typeId,jdbcType=NUMERIC},
+		typeName=#{typeName,jdbcType=VARCHAR},
+		manageType=#{manageType,jdbcType=VARCHAR}, 
+		gszch = #{gszch,jdbcType=VARCHAR},
+		nsrsbh = #{nsrsbh,jdbcType=VARCHAR}, 
+		frsfzhm = #{frsfzhm,jdbcType=VARCHAR},
+		frsjh = #{frsjh,jdbcType=VARCHAR},
+	    yyzzPic = #{yyzzPic,jdbcType=VARCHAR}, 
+	    ylStatus = #{ylStatus,jdbcType=NUMERIC},
+	    frPic = #{frPic,jdbcType=VARCHAR},
+	    abbreviationName=#{abbreviationName,jdbcType=VARCHAR},
+	    codePic=#{codePic,jdbcType=VARCHAR},
+	    nsrsbhPic=#{nsrsbhPic,jdbcType=VARCHAR},
+	    yyzz=#{yyzz,jdbcType=VARCHAR},
+	    creditCode=#{creditCode,jdbcType=VARCHAR},
+	    currencyFunds=#{currencyFunds,jdbcType=VARCHAR}
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId,jdbcType=TIMESTAMP}
+	</update>
+	
+	<update id="updateInfo" parameterType="com.casic.tenant.model.TenantInfo">
+		UPDATE sys_org_info SET
+		NAME=#{name,jdbcType=VARCHAR},
+		TYPE=#{type,jdbcType=VARCHAR},
+		MODEL=#{model,jdbcType=VARCHAR},
+		PRODUCT=#{product,jdbcType=VARCHAR},
+		INDUSTRY=#{industry,jdbcType=VARCHAR},
+		INDUSTRY2=#{industry2,jdbcType=VARCHAR},
+		EMAIL=#{email,jdbcType=VARCHAR},
+		IS_PUBLIC=#{isPublic,jdbcType=VARCHAR},
+		CONNECTER=#{connecter,jdbcType=VARCHAR},
+		TEL=#{tel,jdbcType=VARCHAR},
+		HOMEPHONE=#{homephone,jdbcType=VARCHAR},
+		STATE=#{state,jdbcType=NUMERIC},
+		LOGO=#{logo,jdbcType=VARCHAR},
+		SHOWIMAGE=#{showimage,jdbcType=VARCHAR},
+		INFO=#{info,jdbcType=VARCHAR},
+		SCALE=#{scale,jdbcType=VARCHAR},
+		AREA=#{area,jdbcType=NUMERIC},
+		REG_CAPITAL=#{regCapital,jdbcType=VARCHAR},
+		REGISTERTIME=#{registertime,jdbcType=TIMESTAMP},
+		MANAGE_RANGE=#{manageRange,jdbcType=VARCHAR},
+		CLIENTS=#{clients,jdbcType=VARCHAR},
+		TURNOVER=#{turnover,jdbcType=VARCHAR},
+		SELL_AREA=#{sellArea,jdbcType=VARCHAR},
+		SELL_AREA2=#{sellArea2,jdbcType=VARCHAR},
+		COUNTRY=#{country,jdbcType=VARCHAR},
+		PROVINCE=#{province,jdbcType=VARCHAR},
+		CITY=#{city,jdbcType=VARCHAR},
+	<!-- 	CREATETIME=#{createtime,jdbcType=TIMESTAMP}, -->
+		ADDRESS=#{address,jdbcType=VARCHAR},
+		POSTCODE=#{postcode,jdbcType=VARCHAR},
+		WEBSITE=#{website,jdbcType=VARCHAR},
+		QRcode=#{QRcode,jdbcType=VARCHAR},
+		BRAND=#{brand,jdbcType=VARCHAR},
+		EXPORT_FORE=#{exportFore,jdbcType=VARCHAR},
+		IMPORT_FORE=#{importFore,jdbcType=VARCHAR},
+		QUALITY_CONTROL=#{qualityControl,jdbcType=VARCHAR},
+		abbreviationName=#{abbreviationName,jdbcType=VARCHAR},
+	    PROVINCE1=#{province1,jdbcType=VARCHAR},
+	    CITY1=#{city1,jdbcType=VARCHAR},
+	    COUNTY1=#{county1,jdbcType=VARCHAR},
+	    address1=#{address1,jdbcType=VARCHAR},
+	    FAX=#{fax,jdbcType=VARCHAR},
+	    currencyFunds=#{currencyFunds,jdbcType=VARCHAR},
+	     invititedCode=#{invititedCode,jdbcType=VARCHAR}
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId,jdbcType=TIMESTAMP}
+		
+		
+	</update>
+	
+	<!-- <update id="updateOpenCloseAccount" parameterType="com.casic.tenant.model.TenantInfo">
+		UPDATE sys_org_info SET
+		CODE=#{code,jdbcType=VARCHAR},
+		yyzz=#{yyzz,jdbcType=VARCHAR},
+		nsrsbh = #{nsrsbh,jdbcType=VARCHAR},
+		<if test="@Ognl@isNotEmpty(frsfzhm)">
+		frsfzhm = #{frsfzhm,jdbcType=VARCHAR},
+		</if>
+		INCORPORATOR=#{incorporator,jdbcType=VARCHAR}
+		
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId,jdbcType=TIMESTAMP}
+		
+		
+	</update> -->
+	
+	
+	<update id="updateCopy" parameterType="com.casic.tenant.model.TenantInfo">
+		UPDATE sys_org_info_copy SET
+		EMAIL=#{email,jdbcType=VARCHAR},
+		NAME=#{name,jdbcType=VARCHAR},
+		INDUSTRY=#{industry,jdbcType=VARCHAR},
+		SCALE=#{scale,jdbcType=VARCHAR},
+		ADDRESS=#{address,jdbcType=VARCHAR},
+		POSTCODE=#{postcode,jdbcType=VARCHAR},
+		CONNECTER=#{connecter,jdbcType=VARCHAR},
+		TEL=#{tel,jdbcType=VARCHAR},
+		FAX=#{fax,jdbcType=VARCHAR},
+		HOMEPHONE=#{homephone,jdbcType=VARCHAR},
+		LOGO=#{logo,jdbcType=VARCHAR},
+		INDUSTRY2=#{industry2,jdbcType=VARCHAR},
+		INFO=#{info,jdbcType=VARCHAR},
+		COUNTRY=#{country,jdbcType=VARCHAR},
+		PROVINCE=#{province,jdbcType=VARCHAR},
+		CITY=#{city,jdbcType=VARCHAR},
+		CODE=#{code,jdbcType=VARCHAR},
+		TYPE=#{type,jdbcType=VARCHAR},
+		MODEL=#{model,jdbcType=VARCHAR},
+		PRODUCT=#{product,jdbcType=VARCHAR},
+		WEBSITE=#{website,jdbcType=VARCHAR},
+		IS_PUBLIC=#{isPublic,jdbcType=VARCHAR},
+		REGISTERTIME=#{registertime,jdbcType=TIMESTAMP},
+	<!-- 	CREATETIME=#{createtime,jdbcType=TIMESTAMP}, -->
+		FLAGLOGO=#{flaglogo,jdbcType=VARCHAR},
+		STATE=#{state,jdbcType=NUMERIC},
+		MANAGE_RANGE=#{manageRange,jdbcType=VARCHAR},
+		REG_PROVE=#{regProve,jdbcType=VARCHAR},
+		SELL_AREA=#{sellArea,jdbcType=VARCHAR},
+		BRAND=#{brand,jdbcType=VARCHAR},
+		EMPLOYEES=#{employees,jdbcType=NUMERIC},
+		AREA=#{area,jdbcType=NUMERIC},
+		CLIENTS=#{clients,jdbcType=VARCHAR},
+		TURNOVER=#{turnover,jdbcType=VARCHAR},
+		EXPORT_FORE=#{exportFore,jdbcType=VARCHAR},
+		IMPORT_FORE=#{importFore,jdbcType=VARCHAR},
+		QUALITY_CONTROL=#{qualityControl,jdbcType=VARCHAR},
+		REG_CAPITAL=#{regCapital,jdbcType=VARCHAR},
+		REG_ADD=#{regAdd,jdbcType=VARCHAR},
+		INCORPORATOR=#{incorporator,jdbcType=VARCHAR},
+		OPEN_BANK=#{openBank,jdbcType=VARCHAR},
+		OPEN_ACCOUNT=#{openAccount,jdbcType=VARCHAR},
+		SHOWIMAGE=#{showimage,jdbcType=VARCHAR},
+		SELL_AREA2=#{sellArea2,jdbcType=VARCHAR},
+		recommendedEnt=#{recommendedEnt,jdbcType=VARCHAR},
+		setid=#{setid,jdbcType=NUMERIC},
+		QRcode=#{QRcode,jdbcType=VARCHAR},
+		orgType=#{orgType,jdbcType=VARCHAR},
+		typeId=#{typeId,jdbcType=NUMERIC},
+		typeName=#{typeName,jdbcType=VARCHAR},
+		manageType=#{manageType,jdbcType=VARCHAR}, 
+		gszch = #{gszch,jdbcType=VARCHAR},
+		nsrsbh = #{nsrsbh,jdbcType=VARCHAR}, 
+		frsfzhm = #{frsfzhm,jdbcType=VARCHAR},
+		frsjh = #{frsjh,jdbcType=VARCHAR},
+	    yyzzPic = #{yyzzPic,jdbcType=VARCHAR}, 
+	    axnStatus = #{axnStatus,jdbcType=NUMERIC},
+	    ylStatus = #{ylStatus,jdbcType=NUMERIC},
+	    frPic = #{frPic,jdbcType=VARCHAR}
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId}
+	</update>
+	    
+	<select id="getById" parameterType="java.lang.Long" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId}
+	</select>
+	<select id="checkOrgNameExist" parameterType="map" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info
+		WHERE
+		1=1
+		<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+	</select>
+	<select id="getCopyById" parameterType="java.lang.Long" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info_copy
+		WHERE
+		SYS_ORG_INFO_ID=#{sysOrgInfoId}
+	</select>
+	
+	<select id="getAllWsh" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+		<if test="@Ognl@isNotEmpty(connecter)"> AND CONNECTER  LIKE #{connecter}  </if>
+		<if test="@Ognl@isNotEmpty(tel)"> AND TEL  LIKE #{tel}  </if>
+		<if test="@Ognl@isNotEmpty(registertime)"> AND REGISTERTIME  =#{registertime} </if>
+		<if test="@Ognl@isNotEmpty(beginregistertime)"> AND REGISTERTIME  >=#{beginregistertime,jdbcType=TIMESTAMP} </if>
+		<if test="@Ognl@isNotEmpty(endregistertime)"> AND REGISTERTIME <![CDATA[ <=#{endregistertime,jdbcType=TIMESTAMP}]]> </if>
+		<if test="@Ognl@isNotEmpty(begincreatetime)"> AND CREATETIME  >=#{begincreatetime,jdbcType=TIMESTAMP} </if>
+		<if test="@Ognl@isNotEmpty(endcreatetime)"> AND CREATETIME <![CDATA[ <=#{begincreatetime,jdbcType=TIMESTAMP}]]> </if>
+		<if test="@Ognl@isNotEmpty(code)"> AND CODE  LIKE #{code}  </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq} 
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+	</select>
+	
+	<select id="getAllYsh" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info 
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+		<if test="@Ognl@isNotEmpty(connecter)"> AND CONNECTER  LIKE #{connecter}  </if>
+		<if test="@Ognl@isNotEmpty(tel)"> AND TEL  LIKE #{tel}  </if>
+		<if test="@Ognl@isNotEmpty(registertime)"> AND REGISTERTIME  =#{registertime} </if>
+		<if test="@Ognl@isNotEmpty(beginregistertime)"> AND REGISTERTIME  >=#{beginregistertime,jdbcType=TIMESTAMP} </if>
+		<if test="@Ognl@isNotEmpty(endregistertime)"> AND REGISTERTIME <![CDATA[ <=#{endregistertime,jdbcType=TIMESTAMP}]]> </if>
+		<if test="@Ognl@isNotEmpty(code)"> AND CODE  LIKE #{code}  </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq} 
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+	</select>
+	
+	<select id="getAllXzc" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info 
+		<include refid="dynamicWhere" />
+		
+		<if test="@Ognl@isNotEmpty(name)"> AND NAME  LIKE #{name}  </if>
+		<if test="@Ognl@isNotEmpty(connecter)"> AND CONNECTER  LIKE #{connecter}  </if>
+		<if test="@Ognl@isNotEmpty(tel)"> AND TEL  LIKE #{tel}  </if>
+		<if test="@Ognl@isNotEmpty(registertime)"> AND REGISTERTIME  =#{registertime} </if>
+		<if test="@Ognl@isNotEmpty(beginregistertime)"> AND REGISTERTIME  >=#{beginregistertime,jdbcType=TIMESTAMP} </if>
+		<if test="@Ognl@isNotEmpty(endregistertime)"> AND REGISTERTIME <![CDATA[ <=#{endregistertime,jdbcType=TIMESTAMP}]]> </if>
+		<if test="@Ognl@isNotEmpty(code)"> AND CODE  LIKE #{code}  </if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq} 
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+	</select>
+	
+	<select id="getAll" resultMap="Info">
+		SELECT <include refid="columns"/> 
+		FROM sys_org_info    
+		<include refid="dynamicWhere" />
+		
+		<!-- <if test="@Ognl@isNotEmpty(orderField)">
+		order by accountTime  desc
+		</if> -->
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} desc
+		</if>
+		
+	</select>
+	
+	<select id="getAllCopy" resultMap="Info">
+		SELECT <include refid="columns"/> 
+		FROM sys_org_info_copy    
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+	</select>
+	
+	<select id="getAllForCompass" resultMap="Info">
+		SELECT <include refid="columns"/> 
+		FROM sys_org_info    
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by CREATETIME  desc
+		</if>
+	</select>
+	
+	<select id="getAllInfoCount" resultType="java.lang.Integer">
+		SELECT count(*) FROM sys_org_info    
+	</select>
+	
+	<select id="getLastInfo" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info
+		<include refid="dynamicWhere" />
+		group by INDUSTRY order by CREATETIME desc
+	</select>
+	
+	<select id="getLastInfo1" resultMap="Info">
+		SELECT <include refid="columns"/>
+		FROM sys_org_info
+		<include refid="dynamicWhere" />
+		group by INDUSTRY order by CREATETIME desc
+	</select>
+	
+	<select id="getAllbyname" resultMap="Info">
+		SELECT * 
+		FROM sys_org_info   
+		where 
+		name=#{name} 
+	</select>
+ 	
+ 	<select id="getAllbyEmail" resultMap="Info">
+		SELECT * 
+		FROM sys_org_info   
+		where 
+		email=#{email} 
+	</select>
+	
+	<select id="getSnAndEmail" resultMap="Info">
+		SELECT * 
+		FROM sys_org_info   
+		where 
+		email=#{email}  and sysOrgInfoId=#{sysOrgInfoId}
+	</select>
+	
+	<select id="getBusiareaByCopId" resultMap="Info">
+		select * from SYS_ORG_INFO 
+		where SYS_ORG_INFO_ID in 
+		(select distinct (coopenterp_id) from cloud_sale_copcontract where enterprise_id =#{copid})
+	</select>
+	
+	<select id="getCompanyByMouth" resultMap="Info">
+		SELECT * 
+		FROM sys_org_info   
+		where 
+		createtime between #{startTime} and #{endTime}
+	</select>
+	
+	<!-- 搜索企业，基于数据库的搜索，按名称和地址检索 -->
+	<select id="search" resultMap="Info">
+		SELECT * 
+		FROM sys_org_info
+		where 1=1 
+		<if test="@Ognl@isNotEmpty(name)"> 
+		and (name like #{name} or industry like #{name})
+		</if>
+		<if test="@Ognl@isNotEmpty(beginregistertime)"> AND REGISTERTIME  >=#{beginregistertime,jdbcType=TIMESTAMP} </if>
+		<if test="@Ognl@isNotEmpty(scale)"> AND SCALE  LIKE #{scale}  </if>
+		<if test="@Ognl@isNotEmpty(industry)"> AND INDUSTRY  LIKE #{industry}  </if>
+		<if test="@Ognl@isNotEmpty(industry2)"> AND INDUSTRY2  LIKE #{industry2}  </if>
+		<if test="@Ognl@isNotEmpty(province)"> AND PROVINCE  LIKE #{province}  </if>
+		<if test="@Ognl@isNotEmpty(city)"> AND CITY  LIKE #{city}  </if>
+		
+		order by createtime desc
+	</select>
+ <!--    搜索前十条企业 -->
+		<select id="searchlimiten" resultMap="Info">
+	    SELECT * FROM sys_org_info t order by t.CREATETIME desc 
+	   </select>
+	   
+	   
+	   <select id="getAllCounts" resultMap="Info">
+	    select count(*) total FROM sys_org_info where accountTime is not NULL
+	   
+	   </select>
+</mapper>

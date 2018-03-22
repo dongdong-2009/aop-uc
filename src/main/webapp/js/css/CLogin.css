@@ -1,0 +1,41 @@
+.CLogin-capBox{min-width: 780px; background-color: #5EBEFA;}
+.CLogin-cap{width: 780px; height: 48px; margin: 0 auto; background: url(../images/LOGO_yunwang.png) no-repeat 0 center;}
+.CLogin{width: 700px; padding: 20px 40px; margin: 0 auto; }
+.CLogin .CLogin-L{float: left; width: 300px; padding-right: 50px;}
+.CLogin .CLogin-R{float: left; width: 299px; padding-left: 50px; border-left: 1px solid #E1E1E1; min-height: 384px;}
+.CLogin-L .CLogin-LCap{width: 100%; text-align: center; line-height: 26px; padding-bottom: 10px; font-size: 20px; color: #333;}
+.CLogin-L .CLogin-LTit{width: 100%; line-height: 21px; text-align: center; font-size: 16px; color: #555555; padding-bottom: 9px;}
+.CLogin-L .CLogin-LTit>a{color: #0085FE;}
+.CLogin-L .Formtip{display: block; height: 18px; line-height: 18px; padding-left: 25px; font-size: 12px; color: #FF3B30; background: url(../images/icon_error.png) no-repeat;}
+.CLogin-L .FormTab{padding-top: 13px; height: 26px; background: url(../images/backLine.png) repeat-x bottom;}
+.CLogin-L .FormTab span{float: left; line-height: 24px; margin: 0 26px; font-size: 14px; color: #333; cursor: pointer;}
+.CLogin-L .FormTab span.FormTab2{margin-left: 54px;}
+.CLogin-L .FormTab span.cur{border-bottom: 2px solid #0085FE; color: #0085FE;}
+.CLogin-L .FormCon{padding: 4px 0 30px; position: relative;}
+.CLogin-L .FormCon input{width: 278px; padding: 0 10px; height: 38px; line-height: 38px; border:1px solid #E1E1E1; margin-top: 20px; border-radius: 4px;}
+.CLogin-L .FormCon input::-webkit-input-placeholder{color: #999;}
+.CLogin-L .FormCon input:focus{border:1px solid #0085FE;}
+.CLogin-L .FormCon .FormCon_Close{position: absolute; top: 34px; right: 10px; width: 18px; height: 18px; border-radius: 50%; background: url(../images/btn_clean_normal.png) no-repeat center; cursor: pointer;}
+.CLogin-L .FormCon .FormCon_Close.Close2{top: 94px;}
+.CLogin-L .FormCon .FormCon_Close:hover{background-image: url(../images/btn_clean_hover.png);}
+.CLogin-L .formBtn{display: block; width: 100%; text-align: center; height: 40px; line-height: 40px; border-radius: 4px; font-size: 16px; color: #fff; background-color: #7EC728;}
+.CLogin-L .formBtn:hover{background-color: #77BC25;}
+.CLogin-L .formForget{padding:20px 0 0 145px;}
+.CLogin-L .formForget span{padding: 0 5px; color: #E1E1E1;}
+.CLogin-L .formForget a{color: #666;}
+.CLogin-L .formForget a:hover{color: #0085FE;}
+.CLogin-R .CLogin-RHref{font-size: 12px; color: #555555; line-height: 22px; padding: 7px 0;}
+.CLogin-R .CLogin-RHref a{color: #0085FE;}
+.CLogin-R .CLogin-RHref a:hover{text-decoration: underline;}
+.CLogin-R .CLogin-RHref.RHref2{padding-top: 20px;}
+.CLogin-R .CLogin-Rtit{line-height: 16px; font-size: 12px; color: #333; padding-bottom:20px;}
+.CLogin-R .R_list{padding: 30px 0; border-top: 1px solid #E1E1E1; border-bottom: 1px solid #E1E1E1;}
+.CLogin-R .R_list a{display: block;line-height: 26px; height: 26px; padding-left: 32px; font-size: 12px; color: #555; background: url(../images/icon_gouxuan.png) no-repeat 10px center;}
+
+/* 快速登录 */
+.CLogin-info{width: 240px; display: block; margin: 26px auto 14px;}
+.CLogin-L .CLogin-info .userImg{display: block; width: 98px; height: 98px; border:1px solid #E1E1E1; border-radius: 50%; overflow: hidden; margin: 0 auto;}
+.CLogin-L .CLogin-info .userName{display: block; width: 100%; height: 21px; line-height: 21px; padding-top: 10px; text-align: center; font-size: 16px; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.CLogin-L .CLogin-info:hover .userImg{border-color: #5EBEFA;}
+.CLogin-L .CLogin-info:hover .userName{color: #0085FE;}
+.CLogin-L .formForget.rapid{padding-left: 63px;}

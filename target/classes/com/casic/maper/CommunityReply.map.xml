@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.community.model.ReplyBean">
+	<resultMap id="Reply" type="com.casic.community.model.ReplyBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="questionId" column="questionId" jdbcType="VARCHAR"/>
+		<result property="createById" column="createById" jdbcType="VARCHAR"/>
+		<result property="createByName" column="createByName" jdbcType="VARCHAR"/>
+		<result property="createTime" column="createTime" jdbcType="VARCHAR"/>
+		<result property="content" column="content" jdbcType="VARCHAR"/>
+		<result property="replyId" column="replyId" jdbcType="VARCHAR"/>
+		<result property="replyName" column="replyName" jdbcType="VARCHAR"/>
+		<result property="remark1" column="remark1" jdbcType="VARCHAR"/>
+		<result property="remark2" column="remark2" jdbcType="VARCHAR"/>
+		<result property="remark3" column="remark3" jdbcType="VARCHAR"/>
+		<result property="count" column="count" jdbcType="VARCHAR"/>
+		<collection property="praiseBeans" ofType="com.casic.community.model.PraiseBean" column="id" select="getAllPraise"></collection>
+	</resultMap>
+	
+	
+	
+	<sql id="columns">
+		s.id id,questionId,createById,createByName,createTime,content,s.replyId,replyName,remark1,remark2,remark3,count
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+		</where>
+			
+	</sql>
+
+	<insert id="add" parameterType="com.casic.community.model.ReplyBean">
+		INSERT INTO sys_community_reply  
+		(id,questionId,createById,createByName,createTime,content,replyId,replyName,remark1,remark2,remark3)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{questionId,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},  #{content,jdbcType=VARCHAR}, #{replyId,jdbcType=VARCHAR}, #{replyName,jdbcType=VARCHAR},#{remark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, #{remark3,jdbcType=VARCHAR})
+	</insert>
+	
+	
+	
+	<select id="getById" parameterType="java.lang.Long" resultType="com.casic.community.model.ReplyBean">
+		SELECT <include refid="columns"/> FROM  sys_community_reply s WHERE s.id=#{id}
+	</select>
+	
+	
+	<select id="getAll" parameterType="java.lang.String" resultMap="Reply">
+		SELECT <include refid="columns"/>
+		FROM  sys_community_reply s 
+		where s.questionId=#{questionId}
+	   <include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} desc
+		</if>	
+	</select>
+	
+	<select id="getAllPraise" parameterType="java.lang.Long" resultType="com.casic.community.model.PraiseBean">
+	    SELECT * FROM sys_community_praise p WHERE p.replyId=#{id}
+	</select>
+	
+	
+	<update id="updateCountById" parameterType="map">
+	  UPDATE sys_community_reply s SET s.count=#{count} WHERE s.id=#{id}
+	</update>
+
+</mapper>

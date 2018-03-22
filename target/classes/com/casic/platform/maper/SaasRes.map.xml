@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.platform.saas.res.SaasRes">
+	<resultMap id="SaasRes" type="com.casic.platform.saas.res.SaasRes">
+		<id property="saasResId" column="saas_res_id" jdbcType="NUMERIC"/>
+		<result property="resId" column="res_id" jdbcType="NUMERIC"/>
+		<result property="tenantId" column="tenant_id" jdbcType="NUMERIC"/>
+		<result property="status" column="status" jdbcType="VARCHAR"/>
+		<association property="res" column="res_id" jdbcType="NUMERIC"
+					javaType="com.hotent.platform.model.system.Resources" 
+					select="selectRes"/>   
+<!-- 		<association property="tenant" column="tenant_id" jdbcType="NUMERIC"  -->
+<!-- 					javaType="com.hotent.platform.model.system.SysOrgInfo" -->
+<!-- 					select="selectInfo"/> -->
+	</resultMap>
+	
+	<select id="selectRes" parameterType="Long" resultType="com.hotent.platform.model.system.Resources">  
+		 SELECT * FROM SYS_RES WHERE resId = #{resId}
+	</select>
+	
+	<select id="selectInfo" parameterType="Long" resultType="com.hotent.platform.model.system.SysOrgInfo">  
+		 SELECT * FROM SYS_ORG_INFO WHERE SYS_ORG_INFO_ID = #{tenantId}
+	</select>
+	
+	<sql id="columns">
+		saas_res_id,res_id,tenant_id,status
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(saasResId)"> AND saas_res_id= #{saasResId} </if>
+			<if test="@Ognl@isNotEmpty(resId)"> AND res_id  = #{resId} </if>
+			<if test="@Ognl@isNotEmpty(tenantId)"> AND tenant_id  = #{tenantId}  </if>
+			<if test="@Ognl@isNotEmpty(status)"> AND status = #{status}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.platform.saas.res.SaasRes">
+		INSERT INTO cloud_saas_res
+		(saas_res_id,res_id,tenant_id,status)
+		VALUES
+		(#{saasResId,jdbcType=NUMERIC}, #{resId,jdbcType=NUMERIC}, #{tenantId,jdbcType=NUMERIC}, #{status,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="batchInsert">
+		insert into cloud_saas_res (select #{tenantId} + t1.resId, t1.resId, #{tenantId}, '启用' from sys_res t1 where t1.resId in
+		<foreach collection="resIds" item="resId" separator="," open="(" close=")">
+			#{resId,jdbcType=NUMERIC}
+		</foreach>
+		)
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_res
+		WHERE
+		saas_res_id=#{saasResId}
+	</delete>
+	
+	<delete id="delByTenantId" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_res
+		WHERE
+		tenant_id=#{tenantId}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.platform.saas.res.SaasRes">
+		UPDATE cloud_saas_res SET
+		tenant_id=#{tenantId,jdbcType=NUMERIC},
+		res_id=#{resId,jdbcType=VARCHAR},
+		status=#{status,jdbcType=VARCHAR}
+		WHERE
+		saas_res_id=#{saasResId}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SaasRes">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_res
+		WHERE
+		saas_res_id=#{saasResId}
+	</select>
+	
+	<select id="getAll" resultMap="SaasRes">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_res   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by saas_res_id desc
+		</if>
+	</select>
+</mapper>

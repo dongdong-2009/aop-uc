@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.platform.saas.roleRes.SaasRoleRes">
+	<resultMap id="SaasRoleRes" type="com.casic.platform.saas.roleRes.SaasRoleRes">
+		<id property="saasroleresid" column="saasRoleResId" jdbcType="NUMERIC"/>
+		<result property="roleid" column="roleId" jdbcType="NUMERIC"/>
+		<result property="resid" column="resId" jdbcType="NUMERIC"/>
+		<result property="tenantid" column="tenantId" jdbcType="NUMERIC"/>
+	</resultMap>
+
+	<sql id="columns">
+		saasRoleResId,roleId,resId,tenantId
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(saasroleresid)"> AND saasRoleResId  =#{saasroleresid} </if>
+			<if test="@Ognl@isNotEmpty(roleid)"> AND roleId  =#{roleid} </if>
+			<if test="@Ognl@isNotEmpty(resid)"> AND resId  =#{resid} </if>
+			<if test="@Ognl@isNotEmpty(tenantid)"> AND tenantId  =#{tenantid} </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.platform.saas.roleRes.SaasRoleRes">
+		INSERT INTO cloud_saas_role_res
+		(saasRoleResId,roleId,resId,tenantId)
+		VALUES
+		(#{saasroleresid,jdbcType=NUMERIC}, #{roleid,jdbcType=NUMERIC}, #{resid,jdbcType=NUMERIC}, #{tenantid,jdbcType=NUMERIC})
+	</insert>
+	
+	<insert id="batchInsertFromSysRoleRes">
+		insert into cloud_saas_role_res (select #{tenantId} + t1.roleResId,t1.roleId,t1.resId,#{tenantId} from sys_role_res t1 where t1.roleId in
+		<foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+			#{roleId,jdbcType=NUMERIC}
+		</foreach>
+		)
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_role_res 
+		WHERE
+		saasRoleResId=#{saasroleresid}
+	</delete>
+	
+	<delete id="delByTenantAndRole" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_role_res
+		WHERE
+		tenantId=#{tenantId}
+		and
+		roleId=#{roleId}
+	</delete>
+	
+	<!-- 删除企业下的所有角色资源，只删除sysRole里面有的角色，企业自定义的角色不删，让企业自己删 -->
+	<delete id="delByTenant" parameterType="java.lang.Long">
+		DELETE FROM cloud_saas_role_res
+		WHERE
+		tenantId=#{tenantId}
+		and roleId in(select role_id from cloud_saas_role t where t.role_id is not null and t.tenant_id=#{tenantId})
+	</delete>
+	
+	<update id="update" parameterType="com.casic.platform.saas.roleRes.SaasRoleRes">
+		UPDATE cloud_saas_role_res SET
+		roleId=#{roleid,jdbcType=NUMERIC},
+		resId=#{resid,jdbcType=NUMERIC},
+		tenantId=#{tenantid,jdbcType=NUMERIC}
+		WHERE
+		saasRoleResId=#{saasroleresid}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SaasRoleRes">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_role_res
+		WHERE
+		saasRoleResId=#{saasroleresid}
+	</select>
+	
+	<select id="getAll" resultMap="SaasRoleRes">
+		SELECT <include refid="columns"/>
+		FROM cloud_saas_role_res   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by saasRoleResId  desc
+		</if>
+	</select>
+</mapper>

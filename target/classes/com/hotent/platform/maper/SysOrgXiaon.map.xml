@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.xiaon.model.SysOrgXiaon">
+	<resultMap id="SysOrgXiaon" type="com.casic.xiaon.model.SysOrgXiaon">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="siteid" column="siteid" jdbcType="VARCHAR"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="pass" column="pass" jdbcType="VARCHAR"/>
+		<result property="account" column="account" jdbcType="VARCHAR"/>
+		<result property="kfnum" column="kfnum" jdbcType="VARCHAR"/>
+		<result property="type" column="type" jdbcType="NUMERIC"/>
+		<result property="createTime" column="createTime" jdbcType="DATE"/>
+		<result property="deadlineTime" column="deadlineTime" jdbcType="DATE"/>
+		<result property="service" column="service" jdbcType="NUMERIC"/>
+	</resultMap>
+
+	<sql id="columns">
+		id,siteid,name,pass,account,kfnum,type,createTime,deadlineTime,service
+	</sql>
+	
+	<sql id="dynamicWhere">
+		<where>
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(siteid)"> AND siteid  LIKE #{siteid}  </if>
+			<if test="@Ognl@isNotEmpty(name)"> AND name  LIKE #{name}  </if>
+			<if test="@Ognl@isNotEmpty(pass)"> AND pass  LIKE #{pass}  </if>
+			<if test="@Ognl@isNotEmpty(account)"> AND account LIKE #{account} </if>
+			<if test="@Ognl@isNotEmpty(kfnum)"> AND kfnum  LIKE #{kfnum}  </if>
+			<if test="@Ognl@isNotEmpty(type)"> AND type =#{type}  </if>
+			<if test="@Ognl@isNotEmpty(startTime)"> AND createTime >=#{startTime,jdbcType=DATE}  </if>
+			<if test="@Ognl@isNotEmpty(endTime)"> AND createTime <![CDATA[ <=#{endTime,jdbcType=DATE}]]></if>
+			<if test="@Ognl@isNotEmpty(deadlineTime)"> AND deadlineTime  LIKE #{deadlineTime}  </if>
+			<if test="@Ognl@isNotEmpty(service)"> AND service =#{service}  </if>
+		</where>
+	</sql>
+
+	<insert id="add" parameterType="com.casic.xiaon.model.SysOrgXiaon">
+		INSERT INTO sys_org_xiaon
+		(id,siteid,name,pass,account,kfnum,type,createTime,deadlineTime,service)
+		VALUES
+		(#{id,jdbcType=NUMERIC},#{siteid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{pass,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR},#{kfnum,jdbcType=VARCHAR},#{type,jdbcType=NUMERIC},#{createTime,jdbcType=DATE},#{deadlineTime,jdbcType=DATE},#{service,jdbcType=NUMERIC})
+	</insert>
+	
+	<delete id="delById" parameterType="java.lang.Long">
+		DELETE FROM sys_org_xiaon 
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<update id="update" parameterType="com.casic.xiaon.model.SysOrgXiaon">
+		UPDATE sys_org_xiaon 
+		<set>
+			<if test="@Ognl@isNotEmpty(name)"> name  = #{name},</if>
+			<if test="@Ognl@isNotEmpty(pass)"> pass =#{pass},</if>
+			<if test="@Ognl@isNotEmpty(account)"> account =#{account},</if>
+			<if test="@Ognl@isNotEmpty(kfnum)"> kfnum  =#{kfnum},</if>
+			<if test="@Ognl@isNotEmpty(type)"> type  =#{type},</if>
+			<if test="@Ognl@isNotEmpty(createTime)">  createTime  = #{createTime},</if>
+			<if test="@Ognl@isNotEmpty(deadlineTime)">  deadlineTime = #{deadlineTime},</if>
+			<if test="@Ognl@isNotEmpty(service)"> service =#{service}  </if>
+		</set>
+		WHERE 
+		siteid=#{siteid}
+	</update>
+		    
+	<select id="getById" parameterType="java.lang.Long" resultMap="SysOrgXiaon">
+		SELECT <include refid="columns"/>
+		FROM sys_org_xiaon
+		WHERE
+		id=#{id}
+	</select>
+	
+	<select id="getUserId" parameterType="java.lang.Long" resultMap="SysOrgXiaon">
+		SELECT <include refid="columns"/>
+		FROM sys_org_xiaon
+		WHERE
+		siteid=#{id}
+	</select>
+	
+	<select id="getType"  resultMap="SysOrgXiaon">
+		SELECT <include refid="columns"/>
+		FROM sys_org_xiaon
+		WHERE
+		type=#{type}
+	</select>
+	
+	<select id="getAll" resultMap="SysOrgXiaon">
+		SELECT <include refid="columns"/>
+		FROM sys_org_xiaon   
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+</mapper>

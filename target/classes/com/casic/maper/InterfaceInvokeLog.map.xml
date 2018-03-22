@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.casic.log.model.InterfaceInvokeLog">
+	<!-- <resultMap id="UrlBean" type="com.casic.url.model.UrlBean">
+		<id property="id" column="id" jdbcType="NUMERIC"/>
+		<result property="url" column="url" jdbcType="VARCHAR"/>
+		<result property="startTime" column="startTime" jdbcType="VARCHAR"/>
+		<result property="endTime" column="endTime" jdbcType="VARCHAR"/>
+		<result property="fromUrl" column="fromUrl" jdbcType="VARCHAR"/>
+		<result property="isSuccess" column="isSuccess" jdbcType="NUMERIC"/>
+		<result property="failReason" column="failReason" jdbcType="VARCHAR"/>
+		<result property="subSysId" column="subSysId" jdbcType="VARCHAR"/>
+		<result property="subSysName" column="sysName" jdbcType="VARCHAR"/>
+		<result property="remark1" column="remark1" jdbcType="VARCHAR"/>
+		<result property="remark2" column="remark2" jdbcType="NUMERIC"/>
+		<result property="remark3" column="remark3" jdbcType="NUMERIC"/>
+		<result property="currentTimes" column="currentTimes" jdbcType="NUMERIC"/>
+		<result property="currentSeconds" column="currentSeconds" jdbcType="VARCHAR"/>
+	</resultMap> -->
+	
+	<sql id="columns">
+		id,requestUrl,requestParams,responseResult,executeTime,executeMethod,executorId,fromIp
+	</sql>
+	
+	
+	<!-- <sql id="dynamicWhere">
+		<where>
+		1=1
+		and t.subSysId = s.systemId
+			<if test="@Ognl@isNotEmpty(id)"> AND id  =#{id} </if>
+			<if test="@Ognl@isNotEmpty(url)"> AND url  LIKE #{url}  </if>
+			</where>
+	</sql> -->
+
+	<insert id="add" parameterType="com.casic.log.model.InterfaceInvokeLog">
+		INSERT INTO sys_log_interfaceinvoke 
+		(id,requestUrl,requestParams,responseResult,executeTime,executeMethod,executorId,fromIp)
+		VALUES
+		(#{id,jdbcType=NUMERIC}, #{requestUrl,jdbcType=VARCHAR}, #{requestParams,jdbcType=VARCHAR}, #{responseResult,jdbcType=VARCHAR},#{executeTime,jdbcType=DATE},#{executeMethod,jdbcType=VARCHAR},#{executorId,jdbcType=NUMERIC},#{fromIp,jdbcType=VARCHAR})
+	</insert>
+	
+	
+	
+	
+	
+	<!-- <select id="getById" parameterType="java.lang.Long" resultMap="UrlBean">
+		SELECT <include refid="columns"/> FROM  sys_url_monitor WHERE id=#{id}
+	</select>
+	
+	<select id="getByUrl" parameterType="java.lang.String" resultMap="UrlBean">
+		SELECT <include refid="columnsForUrl"/>,
+		(SELECT count(*) from sys_url_monitor t where t.url=#{url} and left(t.startTime,8) = (SELECT replace(curdate(),'-','')) and left(t.endTime,8) = (SELECT replace(curdate(),'-',''))) as currentTimes,
+		(SELECT SUM((t.endTime)-(t.startTime)) from sys_url_monitor t where t.url=#{url}   and left(t.startTime,8) = (SELECT replace(curdate(),'-','')) and left(t.endTime,8) = (SELECT replace(curdate(),'-',''))) as currentSeconds
+		FROM  sys_url_monitor t  WHERE t.url=#{url} 
+	
+	</select>
+	
+	
+	<select id="loadDataByUrl" parameterType="java.lang.String" resultMap="UrlBean">
+	     SELECT count(*) total,(select count(*) from sys_url_monitor where sys_url_monitor.url=#{url} AND sys_url_monitor.isSuccess='1') as successTotal
+	     FROM sys_url_monitor t  WHERE t.url=#{url}
+	</select>
+	
+	
+	
+	
+	<select id="getAll" resultMap="UrlBean">
+		SELECT <include refid="columns"/>
+		FROM  sys_url_monitor
+		<include refid="dynamicWhere" />
+		<if test="@Ognl@isNotEmpty(orderField)">
+		order by ${orderField} ${orderSeq}
+		</if>
+		<if test="@Ognl@isEmpty(orderField)">
+		order by id  desc
+		</if>
+	</select>
+	
+	<select id="getAllUrls" resultMap="UrlBean">
+		SELECT <include refid="columnsForCount"/>
+		FROM  sys_url_monitor t,sys_subsystem s 
+		<include refid="dynamicWhere" />
+		GROUP BY url
+	</select>
+    
+    <select id="getAllUrlDetails" resultMap="UrlBean">
+       SELECT <include refid="columnsForUrlDetail"/>
+       FROM sys_url_monitor t,sys_subsystem s 
+      <include refid="dynamicWhere" />
+      <if test="@Ognl@isNotEmpty(now)">AND left(t.startTime,8) = (SELECT replace(curdate(),'-','')) AND left(t.endTime,8) = (SELECT replace(curdate(),'-',''))</if>
+    </select> -->
+</mapper>

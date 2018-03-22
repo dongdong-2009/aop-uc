@@ -1,0 +1,71 @@
+@charset "utf-8";
+/* CSS Document */
+html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, address, big, cite, code, del, em, font, img, ins, small, strong, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend {margin:0;padding:0;}
+html{_background-image:url(about:blank);_background-attachment:fixed;}
+body{-webkit-text-size-adjust:none;font-family:'微软雅黑';min-width:1250px;max-width:1920px;}
+ol,ul,li{list-style:none outside none;padding:0;}
+.block{ width:1200px; margin:0 auto;}
+h2,h3,h4,h5{ font-weight:100;}
+a {color: #707070; text-decoration: none;}
+input{outline:none; padding:0; background:none; border:none;}
+i{ font-style: normal;}
+img{ border:none; vertical-align:middle;}
+table{ border-collapse: collapse;}
+a{color:inherit;}
+.block{width:1230px;margin:0 auto;position:relative;height:100%;}
+
+
+.header{background:url(../image/header.jpg) no-repeat center;height:137px;position:relative;z-index:3;}
+.header .headTop{background:url(../image/p1.png) no-repeat center;height:40px;padding:0 50px;}
+.header .headTop .left{float:left;font-size:12px;color:#fff;line-height:40px;width:870px;}
+.header .headTop .left a{color:#e3a440;padding-left:10px;}
+.header .headTop .left .l{float:left;}
+.header .headTop .left .r{float:right;}
+.header .headTop .left .r a{color:#fff;}
+.header .headTop .right{float:right;line-height:35px;}
+.header .headTop .right span{padding:2px 0;padding-left:30px;color:#fff;font-size:12px;margin-right:15px;position:relative;z-index:9;}
+.header .headTop .right span:hover{color:#e3a440;}
+.header .headTop .right span:hover img{display:block;}
+.header .headTop .right span img{position:absolute;top:15px;left:-30px;display:none;}
+.header .headTop .right .s1{background:url(../image/wx.png) no-repeat left 3px;}
+.header .headTop .right .s2{background:url(../image/iconewm.png) no-repeat left center;}
+.header .headTop .right .s1:hover{background-position:0 -19px;}
+
+.header .logo{position:absolute;top:52px;left:0;}
+.header .main_nav{position:absolute;top:75px;left:50%;margin-left:-185px;}
+.header .main_nav a{font-size:18px;color:#474747;padding:0 35px;}
+.header .main_nav a:hover{color:#3077b9;}
+.header .seach{position:absolute;top:70px;right:20px;width:39px;height:39px;cursor:pointer;}
+.header .seach i{display:block; background:url(../image/search.png) no-repeat center;width:39px;height:39px;position:absolute;top:0;right:0;}
+.header .seach input{background:url(../image/p34.png) no-repeat;padding:11px 15px;border:none;color:#707070;font-size:14px;position:absolute;top:0;right:0;display:none;}
+/*右侧导航 start*/
+.rnav{position:fixed;right:0;bottom:0;z-index:5;width:73px;}
+.rnav .div{height:80px;margin-bottom:1px;background:#3077b9;text-align:center;}
+.rnav .div a{height:67px;padding-top:13px;display:block;}
+.rnav .div h3{color:#fff;font-size:14px;margin-top:8px;}
+.rnav .div:hover{background:#348ada;}
+/*右侧导航 end*/
+/*面包屑 start*/
+.crumbs{font-size: 14px;color: #707070;padding: 20px 0;}
+.crumbs a{color: #3077b9;}
+/*面包屑 end*/
+/*底部 start*/
+.footer{background:url(../image/j25.jpg) no-repeat center top;padding-top:160px;position:relative;height:255px;}
+.footer .box {position:relative;background:url(../image/p33.png) no-repeat center 15px;height:200px;}
+.footer .box ul li{font-size:14px;color:#bfbfbf;text-align:center;padding-bottom:5px;}
+.footer .box ul {position:absolute;top:0;width: 170px;}
+.footer .box ul li.num{font-size:30px;color:#63a9e9;font-family:'Impact';}
+.footer .box ul li.t{font-size:16px;color:#fff;padding:10px 0;}
+.footer .box .ul1{left:130px;}
+.footer .box .ul2{left:330px;}
+.footer .box .ul3{left:510px;}
+.footer .box .ul4{left:710px;}
+.footer .box .ul5{left:930px;width:201px;}
+.footer .box .ul4 a{line-height:22px;}
+.footer .box .ul5 span{float:left;width:95px;overflow:hidden;}
+.footer .box .ul5 h2{font-size:14px;color:#fff;padding-top:7px;}
+.footer .box .ul5 .s2{float:right;}
+.footer .site{font-size:13px;color:#fff;text-align:center;background:url(../image/bg50.png) repeat;padding:15px 0;position:absolute;bottom:0;left:0;width:100%;}
+.footer .site .l{float:left;}
+.footer .site .r{float:right;}
+/*底部 end*/
